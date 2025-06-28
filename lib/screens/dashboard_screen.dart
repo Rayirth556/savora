@@ -7,6 +7,7 @@ import 'transaction_history_screen.dart';
 import '../widgets/spending_charts.dart';
 import '../widgets/wallet_card.dart';
 import '../theme/savora_theme.dart';
+import '../widgets/sentiment_dashboard_widget.dart';
 
 class DashboardScreen extends StatefulWidget {
   final String userName;
@@ -167,6 +168,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 const SizedBox(height: 24),
                 SizedBox(height: 200, child: SpendingBarChart(data: data)),
               ],
+              const SizedBox(height: 24),
+              const Text(
+                'Sentiment Analysis',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 12),
+              if (_transactions.isNotEmpty)
+                SentimentDashboardWidget(
+                  transactions: _transactions,
+                  monthlyBudget: userBudget,
+                ),
             ],
           ),
         ),
