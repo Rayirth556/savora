@@ -1,5 +1,6 @@
 // lib/widgets/xp_streak_bar.dart
 import 'package:flutter/material.dart';
+import '../theme/savora_theme.dart';
 
 class XPStreakBar extends StatelessWidget {
   final int currentXP;
@@ -28,32 +29,31 @@ class XPStreakBar extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _buildXPSection(progress),
-                _buildStreakSection(),
+                _buildXPSection(context, progress),
+                _buildStreakSection(context),
               ],
             ),
             const SizedBox(height: 12),
-            _buildProgressBar(progress),
+            _buildProgressBar(context, progress),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildXPSection(double progress) {
+  Widget _buildXPSection(BuildContext context, double progress) {
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              const Icon(Icons.star, color: Colors.amber, size: 20),
+              Icon(Icons.star, color: SavoraColors.xpColor, size: 20),
               const SizedBox(width: 4),
               Text(
                 'Level $currentLevel',
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
+                style: context.savoraText.titleLarge?.copyWith(
+                  color: SavoraColors.levelColor,
                 ),
               ),
             ],
@@ -61,9 +61,8 @@ class XPStreakBar extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             '$currentXP / $nextLevelXP XP',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[600],
+            style: context.savoraText.bodyMedium?.copyWith(
+              color: context.savoraColors.onSurface.withOpacity(0.7),
             ),
           ),
         ],
@@ -71,24 +70,23 @@ class XPStreakBar extends StatelessWidget {
     );
   }
 
-  Widget _buildStreakSection() {
+  Widget _buildStreakSection(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: Colors.orange.withOpacity(0.1),
+        color: SavoraColors.streakColor.withOpacity(0.1),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.local_fire_department, color: Colors.orange, size: 20),
+          Icon(Icons.local_fire_department, color: SavoraColors.streakColor, size: 20),
           const SizedBox(width: 4),
           Text(
             '$streakDays day${streakDays != 1 ? 's' : ''}',
-            style: const TextStyle(
-              fontSize: 14,
+            style: context.savoraText.labelMedium?.copyWith(
               fontWeight: FontWeight.bold,
-              color: Colors.orange,
+              color: SavoraColors.streakColor,
             ),
           ),
         ],
@@ -96,7 +94,7 @@ class XPStreakBar extends StatelessWidget {
     );
   }
 
-  Widget _buildProgressBar(double progress) {
+  Widget _buildProgressBar(BuildContext context, double progress) {
     return Column(
       children: [
         Row(
@@ -104,17 +102,15 @@ class XPStreakBar extends StatelessWidget {
           children: [
             Text(
               'Progress to Level ${currentLevel + 1}',
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey[600],
+              style: context.savoraText.bodySmall?.copyWith(
+                color: context.savoraColors.onSurface.withOpacity(0.7),
               ),
             ),
             Text(
               '${(progress * 100).round()}%',
-              style: TextStyle(
-                fontSize: 12,
+              style: context.savoraText.bodySmall?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: Colors.grey[600],
+                color: context.savoraColors.onSurface.withOpacity(0.7),
               ),
             ),
           ],
@@ -122,8 +118,8 @@ class XPStreakBar extends StatelessWidget {
         const SizedBox(height: 4),
         LinearProgressIndicator(
           value: progress,
-          backgroundColor: Colors.grey[300],
-          valueColor: const AlwaysStoppedAnimation<Color>(Colors.amber),
+          backgroundColor: context.savoraColors.onSurface.withOpacity(0.1),
+          valueColor: AlwaysStoppedAnimation<Color>(SavoraColors.xpColor),
           minHeight: 6,
         ),
       ],

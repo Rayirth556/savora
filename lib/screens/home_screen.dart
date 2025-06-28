@@ -6,6 +6,7 @@ import 'dashboard_screen.dart';
 import 'login_screen.dart';
 import '/screens/account_settings_screen.dart';
 import '/screens/appearance_settings_screen.dart';
+import '/theme/savora_theme.dart';
 
 class HomeScreen extends StatefulWidget {
   final String userName;
@@ -100,13 +101,15 @@ class HomeScreenState extends State<HomeScreen> {
                   ? FileImage(File(_profileImagePath!))
                   : null,
               child: _profileImagePath == null
-                  ? const Icon(Icons.person, size: 16)
+                  ? Icon(Icons.person, size: 16, color: SavoraColors.primary)
                   : null,
             ),
             const SizedBox(width: 8),
             Text(
               widget.userName,
-              style: const TextStyle(fontWeight: FontWeight.bold),
+              style: context.savoraText.titleLarge?.copyWith(
+                color: context.savoraColors.onSurface,
+              ),
             ),
           ],
         ),

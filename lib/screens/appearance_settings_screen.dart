@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/savora_theme.dart';
 
 extension StringCasingExtension on String {
   String capitalize() {
@@ -50,26 +51,24 @@ class _AppearanceSettingsScreenState extends State<AppearanceSettingsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Appearance'),
-        backgroundColor: isDark ? Colors.black : Colors.white,
-        foregroundColor: isDark ? Colors.white : Colors.black,
+        backgroundColor: isDark ? SavoraColors.darkSurface : SavoraColors.surface,
+        foregroundColor: isDark ? SavoraColors.darkTextPrimary : SavoraColors.textPrimary,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'Theme',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.purple,
+              style: context.savoraText.headlineMedium?.copyWith(
+                color: SavoraColors.primary,
               ),
             ),
             const SizedBox(height: 20),
             ListTile(
-              leading: const Icon(Icons.dark_mode, color: Colors.purple),
-              title: const Text('Theme Mode'),
+              leading: Icon(Icons.dark_mode, color: SavoraColors.primary),
+              title: Text('Theme Mode'),
               subtitle: Text(
                 _themeMode == ThemeMode.system
                     ? 'System (${brightness == Brightness.dark ? "Dark" : "Light"})'

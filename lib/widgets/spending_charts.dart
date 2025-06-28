@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import '../theme/savora_theme.dart';
 
 class SpendingPieChart extends StatelessWidget {
   final Map<String, double> data;
@@ -9,11 +10,11 @@ class SpendingPieChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = [
-      Colors.blue,
-      Colors.green,
-      Colors.orange,
-      Colors.red,
-      Colors.purple,
+      SavoraColors.primary,
+      SavoraColors.secondary,
+      SavoraColors.accent,
+      SavoraColors.success,
+      SavoraColors.warning,
     ];
     int i = 0;
 
@@ -48,43 +49,72 @@ class SpendingBarChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final barData = data.entries.toList();
+    final colors = [
+      SavoraColors.primary,
+      SavoraColors.secondary,
+      SavoraColors.accent,
+      SavoraColors.success,
+      SavoraColors.warning,
+    ];
 
     return BarChart(
       BarChartData(
         alignment: BarChartAlignment.spaceAround,
-        maxY: (data.values.reduce((a, b) => a > b ? a : b)) + 10,
-        barGroups: List.generate(barData.length, (index) {
-          return BarChartGroupData(
-            x: index,
-            barRods: [
-              BarChartRodData(
-                toY: barData[index].value,
-                color: Colors.teal,
-                width: 20,
-              ),
-            ],
-          );
-        }),
+        maxY: data.values.isEmpty ? 100 : data.values.reduce((a, b) => a > b ? a : b) * 1.2,
+        barTouchData: BarTouchData(enabled: false),
         titlesData: FlTitlesData(
-          leftTitles: const AxisTitles(
-            sideTitles: SideTitles(showTitles: true),
-          ),
+          show: true,
+          rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
           bottomTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,
-              getTitlesWidget: (double value, _) {
-                final idx = value.toInt();
-                if (idx >= 0 && idx < barData.length) {
-                  return Text(
-                    barData[idx].key,
-                    style: const TextStyle(fontSize: 10),
+              getTitlesWidget: (value, meta) {
+                if (value.toInt() >= 0 && value.toInt() < barData.length) {
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Text(
+                      barData[value.toInt()].key,
+                      style: context.savoraText.bodySmall,
+                    ),
                   );
                 }
-                return const SizedBox.shrink();
+                return const Text('');
+              },
+            ),
+          ),
+          leftTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              reservedSize: 40,
+              getTitlesWidget: (value, meta) {
+                return Text(
+                  '₹${value.toInt()}',
+                  style: context.savoraText.bodySmall,
+                );
               },
             ),
           ),
         ),
+        borderData: FlBorderData(show: false),
+        barGroups: barData.asMap().entries.map((entry) {
+          final index = entry.key;
+          final data = entry.value;
+          return BarChartGroupData(
+            x: index,
+            barRods: [
+              BarChartRodData(
+                toY: data.value,
+                color: colors[index % colors.length],
+                width: 20,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(4),
+                  topRight: Radius.circular(4),
+                ),
+              ),
+            ],
+          );
+        }).toList(),
       ),
     );
   }

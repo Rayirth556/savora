@@ -5,6 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/transaction_model.dart';
 import 'transaction_history_screen.dart';
 import '../widgets/spending_charts.dart';
+import '../widgets/wallet_card.dart';
+import '../theme/savora_theme.dart';
 
 class DashboardScreen extends StatefulWidget {
   final String userName;
@@ -81,20 +83,45 @@ class _DashboardScreenState extends State<DashboardScreen> {
             children: [
               _buildHeader(context, totalSpent),
               const SizedBox(height: 16),
+              WalletCard(
+                balance: virtualWalletBalance,
+                onHistory: () async {
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => TransactionHistoryScreen(
+                        initialTransactions: _transactions,
+                        budget: userBudget,
+                      ),
+                    ),
+                  );
+                },
+                onTransaction: (tx) async {
+                  setState(() {
+                    _transactions.add(tx);
+                  });
+                  await _saveTransactions();
+                },
+              ),
+              const SizedBox(height: 16),
               _buildXPAndStreakRow(userXP, streak, userBudget, totalSpent),
               const SizedBox(height: 16),
               _buildTransactionsCard(context, totalSpent, userBudget),
               const SizedBox(height: 24),
-              const Text(
+              Text(
                 'Recent Transactions',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: context.savoraText.headlineMedium?.copyWith(
+                  color: context.savoraColors.onSurface,
+                ),
               ),
               const SizedBox(height: 12),
               if (_transactions.isEmpty)
                 Center(
                   child: Text(
                     'No transactions to show.',
-                    style: Theme.of(context).textTheme.bodyMedium,
+                    style: context.savoraText.bodyMedium?.copyWith(
+                      color: context.savoraColors.onSurface.withOpacity(0.7),
+                    ),
                   ),
                 )
               else
@@ -107,20 +134,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     return Card(
                       margin: const EdgeInsets.symmetric(vertical: 6),
                       child: ListTile(
-                        leading: const Icon(Icons.attach_money),
-                        title: Text(tx.category),
+                        leading: Icon(Icons.attach_money, color: SavoraColors.primary),
+                        title: Text(
+                          tx.category,
+                          style: context.savoraText.titleMedium,
+                        ),
                         subtitle: Text(
                           '${tx.date.day}/${tx.date.month}/${tx.date.year}',
+                          style: context.savoraText.bodySmall,
                         ),
-                        trailing: Text('₹${tx.amount.toStringAsFixed(2)}'),
+                        trailing: Text(
+                          '₹${tx.amount.toStringAsFixed(2)}',
+                          style: context.savoraText.titleMedium?.copyWith(
+                            color: SavoraColors.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                     );
                   },
                 ),
               const SizedBox(height: 24),
-              const Text(
+              Text(
                 'Spending Breakdown',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: context.savoraText.headlineMedium?.copyWith(
+                  color: context.savoraColors.onSurface,
+                ),
               ),
               const SizedBox(height: 12),
               if (_transactions.isNotEmpty) ...[
@@ -144,17 +183,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ? FileImage(File(widget.profileImagePath!))
               : null,
           child: widget.profileImagePath == null
-              ? const Icon(Icons.person, size: 20)
+              ? Icon(Icons.person, size: 20, color: SavoraColors.primary)
               : null,
         ),
         const SizedBox(width: 10),
         Text(
           widget.userName,
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: context.savoraText.headlineSmall?.copyWith(
+            color: context.savoraColors.onSurface,
+          ),
         ),
         const Spacer(),
         IconButton(
-          icon: const Icon(Icons.edit),
+          icon: Icon(Icons.edit, color: SavoraColors.primary),
           tooltip: 'Set Budget',
           onPressed: () => _showSetBudgetDialog(context),
         ),
@@ -194,39 +235,56 @@ class _DashboardScreenState extends State<DashboardScreen> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
-          color: Colors.teal[50],
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Transactions',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              gradient: LinearGradient(
+                colors: [
+                  SavoraColors.primary.withOpacity(0.1),
+                  SavoraColors.primary.withOpacity(0.05),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Transactions',
+                        style: context.savoraText.headlineSmall?.copyWith(
+                          color: SavoraColors.primary,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 6),
-                    Text('Spent: ₹${spent.toStringAsFixed(2)}'),
-                    const SizedBox(height: 6),
-                    TextButton.icon(
-                      onPressed: () => _showSetBudgetDialog(context),
-                      icon: const Icon(Icons.settings),
-                      label: const Text('Set Budget'),
-                      style: TextButton.styleFrom(
-                        padding: EdgeInsets.zero,
-                        minimumSize: const Size(50, 30),
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      const SizedBox(height: 6),
+                      Text(
+                        'Spent: ₹${spent.toStringAsFixed(2)}',
+                        style: context.savoraText.bodyMedium,
                       ),
-                    ),
-                  ],
-                ),
-                const Icon(Icons.arrow_forward_ios, size: 18),
-              ],
+                      const SizedBox(height: 6),
+                      TextButton.icon(
+                        onPressed: () => _showSetBudgetDialog(context),
+                        icon: Icon(Icons.settings, color: SavoraColors.primary),
+                        label: Text(
+                          'Set Budget',
+                          style: TextStyle(color: SavoraColors.primary),
+                        ),
+                        style: TextButton.styleFrom(
+                          padding: EdgeInsets.zero,
+                          minimumSize: const Size(50, 30),
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Icon(Icons.arrow_forward_ios, size: 18, color: SavoraColors.primary),
+                ],
+              ),
             ),
           ),
         ),
@@ -238,24 +296,37 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        _infoTile('XP', xp.toString(), Icons.bolt),
-        _infoTile('Streak', '${streak}d', Icons.local_fire_department),
+        _infoTile('XP', xp.toString(), Icons.bolt, SavoraColors.xpColor),
+        _infoTile('Streak', '${streak}d', Icons.local_fire_department, SavoraColors.streakColor),
         _infoTile(
           'Budget Left',
           '₹${(budget - spent).toStringAsFixed(0)}',
           Icons.track_changes,
+          SavoraColors.success,
         ),
       ],
     );
   }
 
-  Widget _infoTile(String label, String value, IconData icon) {
+  Widget _infoTile(String label, String value, IconData icon, Color color) {
     return Column(
       children: [
-        Icon(icon, color: Colors.teal, size: 28),
+        Icon(icon, color: color, size: 28),
         const SizedBox(height: 4),
-        Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
-        Text(label, style: const TextStyle(fontSize: 12)),
+        Text(
+          value, 
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: color,
+          ),
+        ),
+        Text(
+          label, 
+          style: TextStyle(
+            fontSize: 12,
+            color: color.withOpacity(0.8),
+          ),
+        ),
       ],
     );
   }
