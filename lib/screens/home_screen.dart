@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 //import 'transactions_screen.dart';
-import 'game_screen.dart';
+import 'financial_survival_quest_expert.dart'; // Direct import for Life Simulation
 import 'dashboard_screen.dart';
 import 'login_screen.dart';
 import '/screens/account_settings_screen.dart';
@@ -32,7 +32,7 @@ class HomeScreenState extends State<HomeScreen> {
     super.initState();
     _screens = [
       _buildDashboardScreen(),
-      const GameScreen(),
+      const FinancialSurvivalQuest(), // Direct Life Simulation access
     ];
   }
 
@@ -137,8 +137,8 @@ class HomeScreenState extends State<HomeScreen> {
             label: 'Dashboard',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.videogame_asset),
-            label: 'Games',
+            icon: Icon(Icons.timeline),
+            label: 'Life Simulation',
           ),
         ],
       ),

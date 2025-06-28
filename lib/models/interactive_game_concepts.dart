@@ -1,5 +1,4 @@
 // lib/models/interactive_game_concepts.dart
-import 'package:flutter/material.dart';
 
 // 1. FINANCIAL LIFE SIMULATOR - RPG Style Game
 class LifeSimulatorGame {
