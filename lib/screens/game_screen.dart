@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/game_model.dart';
 import '../widgets/game_card.dart';
 import 'debt_tower_defense.dart';
-// import 'life_simulator_game.dart'; // Commented out - focusing on tower defense
+import 'financial_survival_quest_fixed.dart'; // Fixed enhanced version
 
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key});
@@ -126,9 +126,9 @@ class _GameScreenState extends State<GameScreen> {
       case GameType.towerDefense:
         screen = const DebtTowerDefenseGame();
         break;
-      // case GameType.lifeSimulator:
-      //   screen = const LifeSimulatorGame();
-      //   break;
+      case GameType.lifeSimulator:
+        screen = const FinancialSurvivalQuest();
+        break;
       default:
         // Fallback - show tower defense for now
         screen = const DebtTowerDefenseGame();

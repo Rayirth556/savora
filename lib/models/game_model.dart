@@ -101,19 +101,18 @@ class GameData {
         color: Colors.red,
         estimatedTime: Duration(minutes: 20),
       ),
-      // Temporarily commenting out life simulator - focusing on tower defense
-      // const Game(
-      //   id: 'life_simulator',
-      //   title: 'Life Simulator',
-      //   description: 'Make financial choices throughout your life! Navigate through college, career, housing, and investments to build wealth and happiness.',
-      //   type: GameType.lifeSimulator,
-      //   difficulty: GameDifficulty.easy,
-      //   xpReward: 250,
-      //   coinsReward: 400,
-      //   icon: Icons.timeline,
-      //   color: Colors.purple,
-      //   estimatedTime: Duration(minutes: 15),
-      // ),
+      const Game(
+        id: 'life_simulator',
+        title: 'Life Simulator',
+        description: 'Make financial choices throughout your life! Navigate through college, career, housing, and investments to build wealth and happiness.',
+        type: GameType.lifeSimulator,
+        difficulty: GameDifficulty.easy,
+        xpReward: 250,
+        coinsReward: 400,
+        icon: Icons.timeline,
+        color: Colors.purple,
+        estimatedTime: Duration(minutes: 15),
+      ),
     ];
   }
 }

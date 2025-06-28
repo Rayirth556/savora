@@ -3,6 +3,21 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 import 'dart:ui';
 
+enum LifeStage {
+  student,
+  firstJob,
+  creditTemptations,
+  adultingWithFamily,
+  retirement,
+}
+
+class Achievement {
+  final String id;
+  final String name;
+  final String description;
+  Achievement({required this.id, required this.name, required this.description});
+}
+
 class LifeEvent {
   final String title;
   final String description;
@@ -54,6 +69,39 @@ class GameCharacter {
     this.job = 'Student',
     this.hasHouse = false,
     this.hasPartner = false,
+    this.achievements = const [],
+    this.stats = const {},
+  });
+}
+
+// Expanded character model for financial literacy game
+class FinancialCharacter {
+  String name;
+  int age;
+  LifeStage stage;
+  double savings;
+  int creditScore;
+  int xp; // Financial knowledge
+  int stress;
+  int burnout;
+  bool hasFamily;
+  bool hasHouse;
+  bool isRetired;
+  List<Achievement> achievements;
+  Map<String, dynamic> stats;
+
+  FinancialCharacter({
+    required this.name,
+    this.age = 18,
+    this.stage = LifeStage.student,
+    this.savings = 500.0,
+    this.creditScore = 600,
+    this.xp = 0,
+    this.stress = 20,
+    this.burnout = 0,
+    this.hasFamily = false,
+    this.hasHouse = false,
+    this.isRetired = false,
     this.achievements = const [],
     this.stats = const {},
   });
@@ -320,9 +368,18 @@ class _LifeSimulatorGameState extends State<LifeSimulatorGame>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: const Text('Life Simulator', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text(
+          'LIFE SIMULATOR', 
+          style: TextStyle(
+            fontWeight: FontWeight.w100,
+            fontSize: 24,
+            letterSpacing: 3.0,
+            color: Colors.white,
+          ),
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
         foregroundColor: Colors.white,
@@ -1210,5 +1267,429 @@ class _LifeSimulatorGameState extends State<LifeSimulatorGame>
     if (score >= 1) return 'Good Life! 👍';
     if (score >= 0.5) return 'Average Life 😐';
     return 'Challenging Life 😔';
+  }
+}
+
+class FinancialSurvivalQuest extends StatefulWidget {
+  const FinancialSurvivalQuest({super.key});
+
+  @override
+  State<FinancialSurvivalQuest> createState() => _FinancialSurvivalQuestState();
+}
+
+class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest> {
+  late FinancialCharacter player;
+  int currentEventIndex = 0;
+  bool gameOver = false;
+  bool characterCreated = false;
+  String? playerName;
+
+  // Example events for demo
+  final List<LifeEvent> events = [
+    LifeEvent(
+      title: 'Welcome to Student Life!',
+      description: 'You start college with \$500 in savings. Tuition, rent, and social life await. What will you do first?',
+      choices: [
+        LifeChoice(text: 'Get a part-time job', moneyImpact: 200, happinessImpact: -10, consequence: 'You earn some money but have less free time.'),
+        LifeChoice(text: 'Take a student loan', moneyImpact: 1000, happinessImpact: 0, consequence: 'You have more cash, but debt looms.'),
+        LifeChoice(text: 'Budget strictly', moneyImpact: 0, happinessImpact: -5, consequence: 'You save money but miss out on fun.'),
+      ],
+      minAge: 18,
+      maxAge: 22,
+    ),
+    LifeEvent(
+      title: 'Credit Temptations',
+      description: 'You get your first credit card offer. What do you do?',
+      choices: [
+        LifeChoice(text: 'Accept and use responsibly', moneyImpact: 0, happinessImpact: 5, consequence: 'You build credit.'),
+        LifeChoice(text: 'Max it out on gadgets', moneyImpact: -500, happinessImpact: 10, consequence: 'Fun now, debt later!'),
+        LifeChoice(text: 'Decline the offer', moneyImpact: 0, happinessImpact: 0, consequence: 'No risk, no reward.'),
+      ],
+      minAge: 22,
+      maxAge: 25,
+    ),
+    // ...add more events for each stage...
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    player = FinancialCharacter(name: '');
+  }
+
+  void createCharacter(String name) {
+    setState(() {
+      player = FinancialCharacter(name: name);
+      characterCreated = true;
+    });
+  }
+
+  void makeChoice(LifeChoice choice) {
+    setState(() {
+      player.savings += choice.moneyImpact.toDouble();
+      player.stress += (choice.moneyImpact < 0) ? 10 : -5;
+      player.xp += 5;
+      player.age += 1;
+      // Advance event or end game
+      if (currentEventIndex < events.length - 1) {
+        currentEventIndex++;
+      } else {
+        gameOver = true;
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Financial Survival Quest'),
+        backgroundColor: Colors.purple,
+        foregroundColor: Colors.white,
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.purple.shade400,
+              Colors.purple.shade800,
+            ],
+          ),
+        ),
+        child: _buildCurrentScreen(),
+      ),
+    );
+  }
+
+  Widget _buildCurrentScreen() {
+    if (!characterCreated) {
+      return _buildCharacterCreationScreen();
+    }
+    if (gameOver) {
+      return _buildGameOverScreen();
+    }
+    return _buildGameplayScreen();
+  }
+
+  Widget _buildCharacterCreationScreen() {
+    return Center(
+      child: Container(
+        margin: const EdgeInsets.all(32),
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              blurRadius: 20,
+              offset: const Offset(0, 10),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.person_add,
+              size: 64,
+              color: Colors.purple.shade600,
+            ),
+            const SizedBox(height: 24),
+            Text(
+              'Create Your Character',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.purple.shade800,
+              ),
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Start your financial journey! Choose a name and begin making life-changing decisions.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey,
+              ),
+            ),
+            const SizedBox(height: 32),
+            TextField(
+              decoration: InputDecoration(
+                hintText: 'Enter your name',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                filled: true,
+                fillColor: Colors.grey.shade50,
+                prefixIcon: Icon(Icons.person, color: Colors.purple.shade600),
+              ),
+              onChanged: (val) => playerName = val,
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton(
+                onPressed: () {
+                  if (playerName != null && playerName!.isNotEmpty) {
+                    createCharacter(playerName!);
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.purple.shade600,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: const Text(
+                  'Start Your Journey',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildGameOverScreen() {
+    return Center(
+      child: Container(
+        margin: const EdgeInsets.all(32),
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              blurRadius: 20,
+              offset: const Offset(0, 10),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.emoji_events,
+              size: 64,
+              color: Colors.amber.shade600,
+            ),
+            const SizedBox(height: 24),
+            const Text(
+              'Game Complete!',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Final Savings: \$${player.savings.toStringAsFixed(2)}',
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.green.shade600,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Credit Score: ${player.creditScore}',
+              style: const TextStyle(fontSize: 16, color: Colors.black87),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Total XP: ${player.xp}',
+              style: const TextStyle(fontSize: 16, color: Colors.black87),
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton(
+                onPressed: () => setState(() {
+                  currentEventIndex = 0;
+                  gameOver = false;
+                  characterCreated = false;
+                  player = FinancialCharacter(name: '');
+                  playerName = null;
+                }),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.purple.shade600,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: const Text(
+                  'Play Again',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildGameplayScreen() {
+    final event = events[currentEventIndex];
+    return Padding(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        children: [
+          // Character stats card
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.9),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Column(
+              children: [
+                Text(
+                  player.name,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Stage: ${player.stage.name.toUpperCase()}',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.purple.shade600,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _buildStatItem('Savings', '\$${player.savings.toStringAsFixed(0)}', Colors.green),
+                    _buildStatItem('Credit', '${player.creditScore}', Colors.blue),
+                    _buildStatItem('XP', '${player.xp}', Colors.orange),
+                    _buildStatItem('Stress', '${player.stress}', Colors.red),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          
+          const SizedBox(height: 24),
+          
+          // Event card
+          Expanded(
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 10,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    event.title,
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    event.description,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.black54,
+                      height: 1.4,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  const Text(
+                    'Choose your action:',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Expanded(
+                    child: ListView(
+                      children: event.choices.map((choice) => Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.purple.shade50,
+                              foregroundColor: Colors.purple.shade700,
+                              padding: const EdgeInsets.all(16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                side: BorderSide(color: Colors.purple.shade200),
+                              ),
+                            ),
+                            onPressed: () => makeChoice(choice),
+                            child: Text(
+                              choice.text,
+                              style: const TextStyle(fontSize: 16),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                      )).toList(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatItem(String label, String value, Color color) {
+    return Column(
+      children: [
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: color,
+          ),
+        ),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 12,
+            color: Colors.black54,
+          ),
+        ),
+      ],
+    );
   }
 }
