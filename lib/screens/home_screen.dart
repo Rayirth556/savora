@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 //import 'transactions_screen.dart';
 import 'financial_survival_quest_expert.dart'; // Direct import for Life Simulation
+import 'difficulty_selection_screen.dart'; // Import for difficulty selection
 import 'dashboard_screen.dart';
 import 'login_screen.dart';
 import '/screens/account_settings_screen.dart';
@@ -32,7 +33,7 @@ class HomeScreenState extends State<HomeScreen> {
     super.initState();
     _screens = [
       _buildDashboardScreen(),
-      const FinancialSurvivalQuest(), // Direct Life Simulation access
+      _buildDashboardScreen(), // Placeholder - navigation happens via _onTabTapped
     ];
   }
 
@@ -49,9 +50,19 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   void _onTabTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    if (index == 1) {
+      // Navigate to difficulty selection screen for Life Simulation
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const DifficultySelectionScreen(),
+        ),
+      );
+    } else {
+      setState(() {
+        _selectedIndex = index;
+      });
+    }
   }
 
   void _handleMenuSelection(String value) async {

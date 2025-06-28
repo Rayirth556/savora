@@ -1,6 +1,8 @@
 // Enhanced Financial Survival Quest - Expert Level India-Focused Life Simulation
 import 'package:flutter/material.dart';
 import 'dart:math';
+import '../services/ai_scenario_service.dart';
+import 'difficulty_selection_screen.dart'; // Import for GameDifficulty
 
 // Life stages with detailed progression
 enum LifeStage {
@@ -59,6 +61,129 @@ class Achievement {
       unlockedAt: unlockedAt ?? this.unlockedAt,
     );
   }
+
+  bool get isUnlocked => unlockedAt != null;
+}
+
+// Predefined Achievements
+class GameAchievements {
+  static final List<Achievement> allAchievements = [
+    // Financial Achievements
+    const Achievement(
+      id: 'first_savings',
+      title: 'First Steps',
+      description: 'Save your first ₹10,000',
+      icon: Icons.savings,
+      color: Colors.green,
+      requiredValue: 10000,
+      category: 'Financial',
+    ),
+    const Achievement(
+      id: 'lakh_club',
+      title: 'Lakh Club',
+      description: 'Accumulate ₹1,00,000 in savings',
+      icon: Icons.account_balance,
+      color: Colors.blue,
+      requiredValue: 100000,
+      category: 'Financial',
+    ),
+    const Achievement(
+      id: 'crorepati',
+      title: 'Crorepati',
+      description: 'Reach ₹1 Crore in savings',
+      icon: Icons.diamond,
+      color: Colors.purple,
+      requiredValue: 10000000,
+      category: 'Financial',
+    ),
+    const Achievement(
+      id: 'debt_free',
+      title: 'Debt Free',
+      description: 'Pay off all debts',
+      icon: Icons.check_circle,
+      color: Colors.teal,
+      requiredValue: 0,
+      category: 'Financial',
+    ),
+    
+    // Credit Achievements
+    const Achievement(
+      id: 'good_credit',
+      title: 'Good Credit',
+      description: 'Achieve a credit score of 750+',
+      icon: Icons.trending_up,
+      color: Colors.orange,
+      requiredValue: 750,
+      category: 'Credit',
+    ),
+    const Achievement(
+      id: 'excellent_credit',
+      title: 'Credit Master',
+      description: 'Achieve an excellent credit score of 800+',
+      icon: Icons.star,
+      color: Colors.amber,
+      requiredValue: 800,
+      category: 'Credit',
+    ),
+    
+    // Life Achievements
+    const Achievement(
+      id: 'home_owner',
+      title: 'Home Sweet Home',
+      description: 'Purchase your first home',
+      icon: Icons.home,
+      color: Colors.brown,
+      requiredValue: 1,
+      category: 'Life',
+    ),
+    const Achievement(
+      id: 'knowledge_seeker',
+      title: 'Knowledge Seeker',
+      description: 'Reach 80% financial knowledge',
+      icon: Icons.school,
+      color: Colors.indigo,
+      requiredValue: 80,
+      category: 'Knowledge',
+    ),
+    const Achievement(
+      id: 'happy_life',
+      title: 'Happy Life',
+      description: 'Maintain 90% happiness',
+      icon: Icons.mood,
+      color: Colors.pink,
+      requiredValue: 90,
+      category: 'Life',
+    ),
+    
+    // Challenge Achievements
+    const Achievement(
+      id: 'decision_maker',
+      title: 'Decision Maker',
+      description: 'Make 10 financial decisions',
+      icon: Icons.psychology,
+      color: Colors.deepPurple,
+      requiredValue: 10,
+      category: 'Gameplay',
+    ),
+    const Achievement(
+      id: 'survivor',
+      title: 'Financial Survivor',
+      description: 'Complete 5 life stages',
+      icon: Icons.shield,
+      color: Colors.red,
+      requiredValue: 5,
+      category: 'Gameplay',
+    ),
+    const Achievement(
+      id: 'wise_investor',
+      title: 'Wise Investor',
+      description: 'Make 5 successful investments',
+      icon: Icons.trending_up_sharp,
+      color: Colors.cyan,
+      requiredValue: 5,
+      category: 'Financial',
+    ),
+  ];
 }
 
 // Enhanced Financial Character
@@ -172,7 +297,9 @@ class LifeChoice {
 
 // Main Game Widget
 class FinancialSurvivalQuest extends StatefulWidget {
-  const FinancialSurvivalQuest({super.key});
+  final GameDifficulty? difficulty;
+  
+  const FinancialSurvivalQuest({super.key, this.difficulty});
 
   @override
   State<FinancialSurvivalQuest> createState() => _FinancialSurvivalQuestState();
@@ -194,6 +321,20 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
   int eventChainDepth = 0; // Track how deep we are in event chains
   final Random _random = Random();
   
+  // Difficulty settings
+  late GameDifficulty gameDifficulty;
+  
+  // Achievement tracking
+  int decisionsCount = 0;
+  int successfulInvestments = 0;
+  List<Achievement> unlockedAchievements = [];
+  bool hasOwnedHome = false;
+  
+  // AI scenario tracking
+  bool useAIScenarios = true; // Toggle for AI vs predefined scenarios
+  String previousChoicesContext = '';
+  bool isGeneratingAIScenario = false;
+  
   // Controllers for animations and text input
   late AnimationController _fadeController;
   late AnimationController _slideController;
@@ -209,6 +350,7 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
   @override
   void initState() {
     super.initState();
+    gameDifficulty = widget.difficulty ?? GameDifficulty.expert; // Default to expert if no difficulty provided
     _initializeAnimations();
     _nameController = TextEditingController();
   }
@@ -413,10 +555,10 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 1.2,
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 12,
+              crossAxisCount: 3,
+              childAspectRatio: 0.9,
+              crossAxisSpacing: 8,
+              mainAxisSpacing: 8,
             ),
             itemCount: LifeStage.values.length,
             itemBuilder: (context, index) {
@@ -448,13 +590,13 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
             Icon(
               lifeStage.icon,
               color: isSelected ? primaryWhite : lifeStage.color,
-              size: 32,
+              size: 20,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 4),
             Text(
               lifeStage.displayName,
               style: TextStyle(
-                fontSize: 12,
+                fontSize: 10,
                 fontWeight: FontWeight.bold,
                 color: isSelected ? primaryWhite : primaryBlack,
               ),
@@ -671,11 +813,108 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
       ),
       child: Column(
         children: [
+          // AI Toggle Row
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    useAIScenarios ? Icons.smart_toy : Icons.library_books,
+                    size: 16,
+                    color: useAIScenarios ? Colors.blue : Colors.grey,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    useAIScenarios ? 'AI Scenarios' : 'Predefined',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: useAIScenarios ? Colors.blue : Colors.grey,
+                    ),
+                  ),
+                ],
+              ),
+              Switch(
+                value: useAIScenarios,
+                onChanged: (value) {
+                  setState(() {
+                    useAIScenarios = value;
+                  });
+                },
+                activeColor: Colors.blue,
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+            ],
+          ),
+          if (isGeneratingAIScenario) ...[
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                const SizedBox(
+                  width: 12,
+                  height: 12,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  'Generating AI scenario...',
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: Colors.blue.withOpacity(0.7),
+                  ),
+                ),
+              ],
+            ),
+          ],
+          const SizedBox(height: 12),
+          const Divider(height: 1),
+          const SizedBox(height: 12),
           _buildStatRow('Savings', '₹${character!.savings.toStringAsFixed(0)}', character!.savings / 5000000, Colors.green),
           _buildStatRow('Credit Score', '${character!.creditScore}', character!.creditScore / 850, Colors.blue),
           _buildStatRow('Happiness', '${character!.happiness}%', character!.happiness / 100, Colors.orange),
           _buildStatRow('Knowledge', '${character!.knowledge}%', character!.knowledge / 100, Colors.purple),
           _buildStatRow('Stress', '${character!.stress}%', character!.stress / 100, Colors.red),
+          // AI Provider Status (show when AI is enabled)
+          if (useAIScenarios) ...[
+            const SizedBox(height: 4),
+            Row(
+              children: [
+                Icon(
+                  AIScenarioService.isAPIKeyConfigured() 
+                    ? Icons.cloud_done 
+                    : Icons.cloud_off,
+                  size: 12,
+                  color: AIScenarioService.isAPIKeyConfigured() 
+                    ? Colors.green 
+                    : Colors.orange,
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  AIScenarioService.isAPIKeyConfigured() 
+                    ? 'AI Connected' 
+                    : 'Using Fallbacks',
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: AIScenarioService.isAPIKeyConfigured() 
+                      ? Colors.green 
+                      : Colors.orange,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                GestureDetector(
+                  onTap: () {
+                    _showAIProviderInfo();
+                  },
+                  child: Icon(
+                    Icons.info_outline,
+                    size: 12,
+                    color: Colors.grey.withOpacity(0.7),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ],
       ),
     );
@@ -839,17 +1078,143 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: lightGray),
       ),
-      child: const Column(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Achievements',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          Row(
+            children: [
+              const Icon(Icons.emoji_events, color: Colors.amber, size: 24),
+              const SizedBox(width: 8),
+              const Text(
+                'Achievements',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const Spacer(),
+              Text(
+                '${unlockedAchievements.length}/${GameAchievements.allAchievements.length}',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: primaryBlack.withOpacity(0.7),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
           ),
-          SizedBox(height: 12),
-          Text('Achievement system coming soon...'),
+          const SizedBox(height: 16),
+          if (unlockedAchievements.isEmpty)
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: lightGray.withOpacity(0.3),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Text(
+                'Start making financial decisions to unlock achievements!',
+                style: TextStyle(fontSize: 14),
+                textAlign: TextAlign.center,
+              ),
+            )
+          else
+            Column(
+              children: [
+                // Show unlocked achievements
+                ...unlockedAchievements.take(3).map((achievement) => 
+                  _buildAchievementItem(achievement, true)),
+                if (unlockedAchievements.length > 3)
+                  Container(
+                    margin: const EdgeInsets.only(top: 8),
+                    child: Text(
+                      '+${unlockedAchievements.length - 3} more unlocked',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: primaryBlack.withOpacity(0.6),
+                      ),
+                    ),
+                  ),
+                const SizedBox(height: 12),
+                const Divider(),
+                const SizedBox(height: 8),
+                // Show next achievements to unlock
+                Text(
+                  'Next to unlock:',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: primaryBlack.withOpacity(0.8),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                ..._getNextAchievements().take(2).map((achievement) => 
+                  _buildAchievementItem(achievement, false)),
+              ],
+            ),
         ],
       ),
     );
+  }
+
+  Widget _buildAchievementItem(Achievement achievement, bool isUnlocked) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: isUnlocked 
+            ? achievement.color.withOpacity(0.1) 
+            : lightGray.withOpacity(0.3),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: isUnlocked ? achievement.color : Colors.transparent,
+          width: 1,
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            achievement.icon,
+            color: isUnlocked ? achievement.color : Colors.grey,
+            size: 20,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  achievement.title,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                    color: isUnlocked ? primaryBlack : Colors.grey,
+                  ),
+                ),
+                Text(
+                  achievement.description,
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: isUnlocked 
+                        ? primaryBlack.withOpacity(0.7) 
+                        : Colors.grey,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (isUnlocked)
+            Icon(
+              Icons.check_circle,
+              color: achievement.color,
+              size: 16,
+            ),
+        ],
+      ),
+    );
+  }
+
+  List<Achievement> _getNextAchievements() {
+    return GameAchievements.allAchievements
+        .where((achievement) => 
+            !unlockedAchievements.any((unlocked) => unlocked.id == achievement.id))
+        .toList();
   }
 
   void _startGame() {
@@ -876,9 +1241,18 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
       eventCategoryCount.clear(); // Reset category tracking
       eventChainDepth = 0; // Reset chain depth
       
-      // Start the first event
-      _nextEvent();
+      // Reset achievement tracking
+      decisionsCount = 0;
+      successfulInvestments = 0;
+      unlockedAchievements.clear();
+      hasOwnedHome = false;
     });
+    
+    // Check for initial achievements (like starting with high savings in later stages)
+    _checkAchievements();
+    
+    // Start the first event
+    _nextEvent();
   }
 
   Map<String, dynamic> _getLifeStageDefaults(LifeStage stage) {
@@ -976,11 +1350,98 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
     }
   }
 
-  void _nextEvent() {
+  // Achievement System Functions
+  void _checkAchievements() {
+    if (character == null) return;
+
+    for (Achievement achievement in GameAchievements.allAchievements) {
+      if (!unlockedAchievements.any((a) => a.id == achievement.id)) {
+        bool shouldUnlock = false;
+
+        switch (achievement.id) {
+          case 'first_savings':
+            shouldUnlock = character!.savings >= achievement.requiredValue;
+            break;
+          case 'lakh_club':
+            shouldUnlock = character!.savings >= achievement.requiredValue;
+            break;
+          case 'crorepati':
+            shouldUnlock = character!.savings >= achievement.requiredValue;
+            break;
+          case 'debt_free':
+            shouldUnlock = true; // Simplified for now
+            break;
+          case 'good_credit':
+            shouldUnlock = character!.creditScore >= achievement.requiredValue;
+            break;
+          case 'excellent_credit':
+            shouldUnlock = character!.creditScore >= achievement.requiredValue;
+            break;
+          case 'home_owner':
+            shouldUnlock = hasOwnedHome;
+            break;
+          case 'knowledge_seeker':
+            shouldUnlock = character!.knowledge >= achievement.requiredValue;
+            break;
+          case 'happy_life':
+            shouldUnlock = character!.happiness >= achievement.requiredValue;
+            break;
+          case 'decision_maker':
+            shouldUnlock = decisionsCount >= achievement.requiredValue;
+            break;
+          case 'survivor':
+            shouldUnlock = completedEventIds.length >= achievement.requiredValue;
+            break;
+          case 'wise_investor':
+            shouldUnlock = successfulInvestments >= achievement.requiredValue;
+            break;
+        }
+
+        if (shouldUnlock) {
+          _unlockAchievement(achievement);
+        }
+      }
+    }
+  }
+
+  void _unlockAchievement(Achievement achievement) {
+    setState(() {
+      unlockedAchievements.add(achievement.copyWith(unlockedAt: DateTime.now()));
+    });
+
+    // Show achievement notification
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            Icon(achievement.icon, color: achievement.color),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Achievement Unlocked!',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  Text(achievement.title),
+                ],
+              ),
+            ),
+          ],
+        ),
+        backgroundColor: primaryBlack,
+        duration: const Duration(seconds: 3),
+      ),
+    );
+  }
+
+  void _nextEvent() async {
     if (character == null) return;
 
     // Generate a sophisticated, case-based event that hasn't been completed
-    LifeEvent? nextEvent = _generateComplexCaseEvent();
+    LifeEvent? nextEvent = await _generateComplexCaseEvent();
     
     if (nextEvent != null) {
       setState(() {
@@ -993,7 +1454,30 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
     }
   }
 
-  LifeEvent? _generateComplexCaseEvent() {
+  Future<LifeEvent?> _generateComplexCaseEvent() async {
+    // Try AI generation first if enabled
+    if (useAIScenarios && !isGeneratingAIScenario) {
+      try {
+        setState(() {
+          isGeneratingAIScenario = true;
+        });
+        
+        LifeEvent? aiEvent = await _generateAIScenario();
+        if (aiEvent != null) {
+          setState(() {
+            isGeneratingAIScenario = false;
+          });
+          return aiEvent;
+        }
+      } catch (e) {
+        print('AI scenario generation failed: $e');
+        setState(() {
+          isGeneratingAIScenario = false;
+        });
+      }
+    }
+    
+    // Fallback to predefined scenarios
     List<LifeEvent> availableEvents = [];
     
     // Generate different types of complex case-based events
@@ -1016,6 +1500,52 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
     });
     
     return availableEvents.first;
+  }
+
+  Future<LifeEvent?> _generateAIScenario() async {
+    if (character == null) return null;
+    
+    try {
+      // Use the enhanced AI service with automatic fallback
+      final scenarioData = await AIScenarioService.generateScenarioWithFallback(
+        playerName: character!.name,
+        lifeStage: character!.currentStage.displayName,
+        currentSavings: character!.savings,
+        creditScore: character!.creditScore,
+        previousChoices: previousChoicesContext,
+      );
+      
+      return _convertAIDataToLifeEvent(scenarioData);
+    } catch (e) {
+      print('All AI scenario generation failed: $e');
+      // Final fallback to trending scenarios
+      final trendingData = AIScenarioService.generateTrendingScenario();
+      return _convertAIDataToLifeEvent(trendingData);
+    }
+  }
+
+  LifeEvent _convertAIDataToLifeEvent(Map<String, dynamic> data) {
+    final choices = (data['choices'] as List).map((choiceData) {
+      return LifeChoice(
+        text: choiceData['text'] ?? 'Unknown choice',
+        description: choiceData['description'] ?? '',
+        moneyImpact: (choiceData['moneyImpact'] ?? 0).toDouble(),
+        happinessImpact: choiceData['happinessImpact'] ?? 0,
+        stressImpact: choiceData['stressImpact'] ?? 0,
+        knowledgeImpact: choiceData['knowledgeImpact'] ?? 0,
+        creditScoreImpact: choiceData['creditScoreImpact'] ?? 0,
+        outcomeText: choiceData['outcomeText'] ?? 'No outcome available',
+      );
+    }).toList();
+
+    return LifeEvent(
+      id: 'ai_generated_${DateTime.now().millisecondsSinceEpoch}',
+      title: data['title'] ?? 'AI Generated Scenario',
+      description: data['description'] ?? 'AI generated financial scenario',
+      choices: choices,
+      applicableStages: LifeStage.values,
+      category: 'ai_generated',
+    );
   }
 
   LifeEvent _generateRandomCaseEvent(int seed) {
@@ -1084,6 +1614,31 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
     eventCategoryCount[currentEvent!.category] = 
         (eventCategoryCount[currentEvent!.category] ?? 0) + 1;
 
+    // Track decisions for achievements
+    decisionsCount++;
+    
+    // Track successful investments
+    if (choice.text.toLowerCase().contains('invest') && choice.moneyImpact > 0) {
+      successfulInvestments++;
+    }
+    
+    // Track home ownership
+    if (choice.text.toLowerCase().contains('buy') && 
+        choice.text.toLowerCase().contains('home')) {
+      hasOwnedHome = true;
+    }
+
+    // Build context for AI scenarios
+    previousChoicesContext += 'Scenario: ${currentEvent!.title}. '
+        'Choice: ${choice.text}. '
+        'Outcome: ${choice.outcomeText.substring(0, 50)}... ';
+    
+    // Keep context manageable (last 300 characters)
+    if (previousChoicesContext.length > 300) {
+      previousChoicesContext = previousChoicesContext.substring(
+          previousChoicesContext.length - 300);
+    }
+
     // Apply choice effects with expert-level scaling (3x multiplier)
     final moneyImpact = choice.moneyImpact * 3.0;
     final newSavings = (character!.savings + moneyImpact).clamp(0.0, double.infinity);
@@ -1107,6 +1662,9 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
       // Increase chain depth
       eventChainDepth++;
     });
+    
+    // Check for new achievements
+    _checkAchievements();
   }
 
   // Complex case-based event generators
@@ -1324,6 +1882,51 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
       ],
       applicableStages: LifeStage.values,
       category: 'business',
+    );
+  }
+
+  void _showAIProviderInfo() {
+    final providerStatus = AIScenarioService.getProviderStatus();
+    
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('AI Scenario Provider'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Current Provider: ${providerStatus['currentProvider']}'),
+            const SizedBox(height: 8),
+            Text('API Configured: ${providerStatus['isAPIKeyConfigured'] ? "Yes" : "No"}'),
+            const SizedBox(height: 8),
+            Text('Fallback Scenarios: ${providerStatus['fallbackScenariosCount']}'),
+            const SizedBox(height: 12),
+            const Text(
+              'To enable full AI capabilities, configure API keys in the service file.',
+              style: TextStyle(fontSize: 12, color: Colors.grey),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'Available Providers:',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            ...List.generate(
+              (providerStatus['availableProviders'] as List).length,
+              (index) => Text(
+                '• ${providerStatus['availableProviders'][index]}',
+                style: const TextStyle(fontSize: 12),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
     );
   }
 }
