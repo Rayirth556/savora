@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import '../models/game_model.dart';
 import '../widgets/game_card.dart';
-import 'financial_survival_quest_fixed.dart'; // Life simulation game
+import 'financial_survival_quest_expert.dart'; // Life simulation game
 
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key});
