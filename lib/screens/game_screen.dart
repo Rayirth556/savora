@@ -2,11 +2,8 @@
 import 'package:flutter/material.dart';
 import '../models/game_model.dart';
 import '../widgets/game_card.dart';
-import 'quiz_screen.dart';
-import 'scenario_screen.dart';
-import 'game_arena_screen.dart';
-import 'life_simulator_game.dart';
 import 'debt_tower_defense.dart';
+// import 'life_simulator_game.dart'; // Commented out - focusing on tower defense
 
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key});
@@ -35,7 +32,7 @@ class _GameScreenState extends State<GameScreen> {
             _buildHeader(),
             const SizedBox(height: 24),
             const Text(
-              'Choose Your Challenge',
+              'Financial Gaming Arena!',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -43,24 +40,30 @@ class _GameScreenState extends State<GameScreen> {
             ),
             const SizedBox(height: 16),
             Expanded(
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 0.8,
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
+              child: Center(
+                child: Container(
+                  constraints: const BoxConstraints(maxWidth: 400),
+                  child: GridView.builder(
+                    shrinkWrap: true,
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 1,
+                      childAspectRatio: 1.2,
+                      crossAxisSpacing: 16,
+                      mainAxisSpacing: 16,
+                    ),
+                    itemCount: _games.length,
+                    itemBuilder: (context, index) {
+                      final game = _games[index];
+                      final progress = _gameProgress[game.id];
+                      
+                      return GameCard(
+                        game: game,
+                        progress: progress,
+                        onTap: () => _navigateToGame(game),
+                      );
+                    },
+                  ),
                 ),
-                itemCount: _games.length,
-                itemBuilder: (context, index) {
-                  final game = _games[index];
-                  final progress = _gameProgress[game.id];
-                  
-                  return GameCard(
-                    game: game,
-                    progress: progress,
-                    onTap: () => _navigateToGame(game),
-                  );
-                },
               ),
             ),
           ],
@@ -74,7 +77,7 @@ class _GameScreenState extends State<GameScreen> {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Colors.purple, Colors.blue],
+          colors: [Colors.blue, Colors.purple],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -93,7 +96,7 @@ class _GameScreenState extends State<GameScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Level Up Your Financial Skills!',
+                  'Financial Games Collection',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -102,7 +105,7 @@ class _GameScreenState extends State<GameScreen> {
                 ),
                 SizedBox(height: 4),
                 Text(
-                  'Play games, earn XP, and become a money master!',
+                  'Learn financial literacy through fun games!',
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.white70,
@@ -120,24 +123,15 @@ class _GameScreenState extends State<GameScreen> {
     Widget screen;
     
     switch (game.type) {
-      case GameType.quiz:
-        screen = QuizScreen(game: game);
-        break;
-      case GameType.spendingScenario:
-        screen = ScenarioScreen(game: game);
-        break;
-      case GameType.lifeSimulator:
-        screen = const LifeSimulatorGame();
-        break;
       case GameType.towerDefense:
         screen = const DebtTowerDefenseGame();
         break;
-      case GameType.budgetChallenge:
-      case GameType.investmentSimulation:
-      case GameType.savingsGoal:
-      case GameType.stockBattleRoyale:
-      case GameType.financialRPG:
-        screen = GameArenaScreen(game: game);
+      // case GameType.lifeSimulator:
+      //   screen = const LifeSimulatorGame();
+      //   break;
+      default:
+        // Fallback - show tower defense for now
+        screen = const DebtTowerDefenseGame();
         break;
     }
 
