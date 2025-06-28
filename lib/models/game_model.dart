@@ -92,14 +92,14 @@ class GameData {
       const Game(
         id: 'life_simulation',
         title: 'Life Simulation',
-        description: 'Navigate through life\'s financial challenges! Make smart decisions from teenage years through retirement to build wealth and happiness.',
+        description: 'Navigate through India\'s financial challenges! Make smart decisions in expert-level scenarios to build wealth and happiness.',
         type: GameType.lifeSimulator,
-        difficulty: GameDifficulty.easy,
-        xpReward: 250,
-        coinsReward: 400,
+        difficulty: GameDifficulty.hard, // Fixed at expert level
+        xpReward: 500, // Increased for expert level
+        coinsReward: 800, // Increased for expert level
         icon: Icons.timeline,
         color: Colors.purple,
-        estimatedTime: Duration(minutes: 15),
+        estimatedTime: Duration(minutes: 20), // Slightly longer for complex scenarios
       ),
     ];
   }
