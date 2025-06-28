@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 //import 'transactions_screen.dart';
-import 'financial_survival_quest_expert.dart'; // Direct import for Life Simulation
 import 'difficulty_selection_screen.dart'; // Import for difficulty selection
 import 'dashboard_screen.dart';
 import 'login_screen.dart';
