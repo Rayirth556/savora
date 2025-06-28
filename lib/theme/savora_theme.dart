@@ -10,6 +10,7 @@ class SavoraColors {
   static const Color success = Color(0xFF10B981);     // Green for gains
   static const Color warning = Color(0xFFF59E0B);     // Amber for warnings
   static const Color danger = Color(0xFFEF4444);      // Red for losses
+  static const Color error = Color(0xFFEF4444);       // Error color (same as danger)
   
   // Neutral Colors
   static const Color background = Color(0xFFFAFAFA);

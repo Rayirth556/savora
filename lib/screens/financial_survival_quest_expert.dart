@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 import '../services/ai_scenario_service.dart';
+import '../theme/savora_theme.dart';
 import 'difficulty_selection_screen.dart'; // Import for GameDifficulty
 
 // Life stages with detailed progression
@@ -341,11 +342,16 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
   late AnimationController _scaleController;
   late TextEditingController _nameController;
   
-  // Theme colors
-  static const Color primaryBlack = Color(0xFF1A1A1A);
-  static const Color primaryWhite = Color(0xFFFAFAFA);
-  static const Color accentGray = Color(0xFF2D2D2D);
-  static const Color lightGray = Color(0xFFE0E0E0);
+  // Theme colors using Savora theme
+  static const Color primaryColor = SavoraColors.primary;
+  static const Color accentColor = SavoraColors.accent;
+  static const Color successColor = SavoraColors.success;
+  static const Color warningColor = SavoraColors.warning;
+  static const Color dangerColor = SavoraColors.danger;
+  static const Color backgroundColor = SavoraColors.background;
+  static const Color surfaceColor = SavoraColors.surface;
+  static const Color textPrimary = SavoraColors.textPrimary;
+  static const Color textSecondary = SavoraColors.textSecondary;
 
   @override
   void initState() {
@@ -382,7 +388,7 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: primaryWhite,
+      backgroundColor: backgroundColor,
       body: SafeArea(
         child: gameStarted ? _buildGameScreen() : _buildStartScreen(),
       ),
@@ -395,7 +401,7 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [primaryWhite, Color(0xFFF5F5F5)],
+          colors: [backgroundColor, Color(0xFFF5F5F5)],
         ),
       ),
       child: SingleChildScrollView(
@@ -425,7 +431,7 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: primaryBlack,
+        color: textPrimary,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
@@ -443,7 +449,7 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
                 onPressed: currentStep > 0 
                     ? () => setState(() => currentStep--) 
                     : () => Navigator.pop(context),
-                icon: const Icon(Icons.arrow_back, color: primaryWhite),
+                icon: const Icon(Icons.arrow_back, color: surfaceColor),
               ),
               Expanded(
                 child: Column(
@@ -453,7 +459,7 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
-                        color: primaryWhite,
+                        color: surfaceColor,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -490,7 +496,7 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
                 child: Container(
                   height: 4,
                   decoration: BoxDecoration(
-                    color: primaryWhite,
+                    color: surfaceColor,
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -501,8 +507,8 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
                   height: 4,
                   decoration: BoxDecoration(
                     color: currentStep >= 1 
-                        ? primaryWhite 
-                        : primaryWhite.withOpacity(0.3),
+                        ? surfaceColor 
+                        : surfaceColor.withOpacity(0.3),
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -518,9 +524,9 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: primaryWhite,
+        color: surfaceColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: lightGray),
+        border: Border.all(color: textSecondary.withOpacity(0.3)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
@@ -537,7 +543,7 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: primaryBlack,
+              color: textPrimary,
             ),
           ),
           const SizedBox(height: 8),
@@ -577,10 +583,10 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: isSelected ? primaryBlack : accentGray.withOpacity(0.1),
+          color: isSelected ? primaryColor : textSecondary.withOpacity(0.1),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected ? primaryBlack : Colors.transparent,
+            color: isSelected ? primaryColor : Colors.transparent,
             width: 2,
           ),
         ),
@@ -589,7 +595,7 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
           children: [
             Icon(
               lifeStage.icon,
-              color: isSelected ? primaryWhite : lifeStage.color,
+              color: isSelected ? surfaceColor : lifeStage.color,
               size: 20,
             ),
             const SizedBox(height: 4),
@@ -598,7 +604,7 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
               style: TextStyle(
                 fontSize: 10,
                 fontWeight: FontWeight.bold,
-                color: isSelected ? primaryWhite : primaryBlack,
+                color: isSelected ? surfaceColor : textPrimary,
               ),
               textAlign: TextAlign.center,
             ),
@@ -612,13 +618,13 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
     return Container(
       height: 60,
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [primaryBlack, accentGray],
+        gradient: LinearGradient(
+          colors: SavoraColors.primaryGradient,
         ),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: primaryBlack.withOpacity(0.3),
+            color: primaryColor.withOpacity(0.3),
             blurRadius: 15,
             offset: const Offset(0, 8),
           ),
@@ -641,11 +647,11 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: primaryWhite,
+                color: surfaceColor,
               ),
             ),
             SizedBox(width: 8),
-            Icon(Icons.arrow_forward, color: primaryWhite),
+            Icon(Icons.arrow_forward, color: surfaceColor),
           ],
         ),
       ),
@@ -656,9 +662,9 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: primaryWhite,
+        color: surfaceColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: lightGray),
+        border: Border.all(color: textSecondary.withOpacity(0.3)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
@@ -675,7 +681,7 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: primaryBlack,
+              color: textPrimary,
             ),
           ),
           const SizedBox(height: 16),
@@ -683,17 +689,17 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
             controller: _nameController,
             decoration: InputDecoration(
               labelText: 'Character Name',
-              labelStyle: const TextStyle(color: Colors.grey),
+              labelStyle: TextStyle(color: textSecondary),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: lightGray),
+                borderSide: BorderSide(color: textSecondary.withOpacity(0.3)),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: primaryBlack, width: 2),
+                borderSide: const BorderSide(color: primaryColor, width: 2),
               ),
               filled: true,
-              fillColor: Colors.grey[50],
+              fillColor: backgroundColor,
             ),
             onChanged: (value) {
               setState(() {
@@ -714,13 +720,13 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: isEnabled 
-              ? [primaryBlack, accentGray]
+              ? SavoraColors.primaryGradient
               : [Colors.grey[400]!, Colors.grey[300]!],
         ),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: (isEnabled ? primaryBlack : Colors.grey).withOpacity(0.3),
+            color: (isEnabled ? primaryColor : Colors.grey).withOpacity(0.3),
             blurRadius: 15,
             offset: const Offset(0, 8),
           ),
@@ -742,7 +748,7 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
           style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
-            color: primaryWhite,
+            color: surfaceColor,
           ),
         ),
       ),
@@ -757,7 +763,7 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [primaryWhite, Color(0xFFF5F5F5)],
+          colors: [backgroundColor, Color(0xFFF5F5F5)],
         ),
       ),
       child: SingleChildScrollView(
@@ -788,7 +794,7 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: primaryBlack,
+        color: textPrimary,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
@@ -796,7 +802,7 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
         style: const TextStyle(
           fontSize: 24,
           fontWeight: FontWeight.bold,
-          color: primaryWhite,
+          color: surfaceColor,
         ),
         textAlign: TextAlign.center,
       ),
@@ -807,9 +813,9 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: primaryWhite,
+        color: surfaceColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: lightGray),
+        border: Border.all(color: textSecondary.withOpacity(0.3)),
       ),
       child: Column(
         children: [
@@ -822,7 +828,7 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
                   Icon(
                     useAIScenarios ? Icons.smart_toy : Icons.library_books,
                     size: 16,
-                    color: useAIScenarios ? Colors.blue : Colors.grey,
+                    color: useAIScenarios ? primaryColor : textSecondary,
                   ),
                   const SizedBox(width: 8),
                   Text(
@@ -830,7 +836,7 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
-                      color: useAIScenarios ? Colors.blue : Colors.grey,
+                      color: useAIScenarios ? primaryColor : textSecondary,
                     ),
                   ),
                 ],
@@ -842,7 +848,7 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
                     useAIScenarios = value;
                   });
                 },
-                activeColor: Colors.blue,
+                activeColor: primaryColor,
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
             ],
@@ -861,7 +867,7 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
                   'Generating AI scenario...',
                   style: TextStyle(
                     fontSize: 11,
-                    color: Colors.blue.withOpacity(0.7),
+                    color: primaryColor.withOpacity(0.7),
                   ),
                 ),
               ],
@@ -947,7 +953,7 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
           const SizedBox(height: 4),
           LinearProgressIndicator(
             value: progress.clamp(0.0, 1.0),
-            backgroundColor: lightGray,
+            backgroundColor: textSecondary.withOpacity(0.3),
             valueColor: AlwaysStoppedAnimation<Color>(color),
           ),
         ],
@@ -959,9 +965,9 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: primaryWhite,
+        color: surfaceColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: lightGray),
+        border: Border.all(color: textSecondary.withOpacity(0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -988,7 +994,7 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
       child: ElevatedButton(
         onPressed: () => _makeChoice(choice),
         style: ElevatedButton.styleFrom(
-          backgroundColor: primaryBlack,
+          backgroundColor: primaryColor,
           padding: const EdgeInsets.all(16),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
@@ -1002,7 +1008,7 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: primaryWhite,
+                color: surfaceColor,
               ),
             ),
             if (choice.description.isNotEmpty) ...[
@@ -1011,7 +1017,7 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
                 choice.description,
                 style: TextStyle(
                   fontSize: 14,
-                  color: primaryWhite.withOpacity(0.8),
+                  color: surfaceColor.withOpacity(0.8),
                 ),
               ),
             ],
@@ -1025,9 +1031,9 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.blue[50],
+        color: surfaceColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.blue[200]!),
+        border: Border.all(color: primaryColor.withOpacity(0.3)),
       ),
       child: Column(
         children: [
@@ -1060,12 +1066,12 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
     return ElevatedButton(
       onPressed: _nextEvent,
       style: ElevatedButton.styleFrom(
-        backgroundColor: primaryBlack,
+        backgroundColor: primaryColor,
         padding: const EdgeInsets.all(16),
       ),
       child: const Text(
         'Next Challenge',
-        style: TextStyle(fontSize: 18, color: primaryWhite),
+        style: TextStyle(fontSize: 18, color: surfaceColor),
       ),
     );
   }
@@ -1074,9 +1080,9 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: primaryWhite,
+        color: surfaceColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: lightGray),
+        border: Border.all(color: textSecondary.withOpacity(0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1094,7 +1100,7 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
                 '${unlockedAchievements.length}/${GameAchievements.allAchievements.length}',
                 style: TextStyle(
                   fontSize: 14,
-                  color: primaryBlack.withOpacity(0.7),
+                  color: textPrimary.withOpacity(0.7),
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -1105,7 +1111,7 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: lightGray.withOpacity(0.3),
+                color: textSecondary.withOpacity(0.3),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: const Text(
@@ -1127,7 +1133,7 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
                       '+${unlockedAchievements.length - 3} more unlocked',
                       style: TextStyle(
                         fontSize: 12,
-                        color: primaryBlack.withOpacity(0.6),
+                        color: textPrimary.withOpacity(0.6),
                       ),
                     ),
                   ),
@@ -1140,7 +1146,7 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
-                    color: primaryBlack.withOpacity(0.8),
+                    color: textPrimary.withOpacity(0.8),
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -1160,7 +1166,7 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
       decoration: BoxDecoration(
         color: isUnlocked 
             ? achievement.color.withOpacity(0.1) 
-            : lightGray.withOpacity(0.3),
+            : textSecondary.withOpacity(0.3),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
           color: isUnlocked ? achievement.color : Colors.transparent,
@@ -1184,7 +1190,7 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.bold,
-                    color: isUnlocked ? primaryBlack : Colors.grey,
+                    color: isUnlocked ? textPrimary : Colors.grey,
                   ),
                 ),
                 Text(
@@ -1192,7 +1198,7 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
                   style: TextStyle(
                     fontSize: 11,
                     color: isUnlocked 
-                        ? primaryBlack.withOpacity(0.7) 
+                        ? textPrimary.withOpacity(0.7) 
                         : Colors.grey,
                   ),
                 ),
@@ -1431,7 +1437,7 @@ class _FinancialSurvivalQuestState extends State<FinancialSurvivalQuest>
             ),
           ],
         ),
-        backgroundColor: primaryBlack,
+        backgroundColor: textPrimary,
         duration: const Duration(seconds: 3),
       ),
     );

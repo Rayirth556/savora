@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 //import 'transactions_screen.dart';
 import 'difficulty_selection_screen.dart'; // Import for difficulty selection
+import 'stock_market_dashboard_screen.dart'; // Import for stock market
 import 'dashboard_screen.dart';
 import 'login_screen.dart';
 import '/screens/account_settings_screen.dart';
@@ -34,6 +35,7 @@ class HomeScreenState extends State<HomeScreen> {
     _screens = [
       _buildDashboardScreen(),
       _buildDashboardScreen(), // Placeholder - navigation happens via _onTabTapped
+      _buildDashboardScreen(), // Placeholder - navigation happens via _onTabTapped
     ];
   }
 
@@ -56,6 +58,14 @@ class HomeScreenState extends State<HomeScreen> {
         context,
         MaterialPageRoute(
           builder: (context) => const DifficultySelectionScreen(),
+        ),
+      );
+    } else if (index == 2) {
+      // Navigate to stock market dashboard
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const StockMarketDashboardScreen(),
         ),
       );
     } else {
@@ -144,6 +154,7 @@ class HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onTabTapped,
+        type: BottomNavigationBarType.fixed,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.dashboard),
@@ -152,6 +163,10 @@ class HomeScreenState extends State<HomeScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.timeline),
             label: 'Life Simulation',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.trending_up),
+            label: 'Stock Market',
           ),
         ],
       ),

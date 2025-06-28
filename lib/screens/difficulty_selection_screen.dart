@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'financial_survival_quest_expert.dart';
+import '../theme/savora_theme.dart';
+import '../theme/savora_theme.dart';
 
 enum GameDifficulty {
   beginner(
@@ -87,9 +89,9 @@ class _DifficultySelectionScreenState extends State<DifficultySelectionScreen>
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Colors.indigo.shade900,
-              Colors.purple.shade800,
-              Colors.deepPurple.shade900,
+              SavoraColors.primary,
+              SavoraColors.secondary,
+              SavoraColors.accent,
             ],
           ),
         ),
@@ -129,14 +131,14 @@ class _DifficultySelectionScreenState extends State<DifficultySelectionScreen>
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.1),
+              color: SavoraColors.surface.withOpacity(0.1),
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: Colors.white.withOpacity(0.2)),
+              border: Border.all(color: SavoraColors.surface.withOpacity(0.2)),
             ),
             child: Icon(
               Icons.psychology_alt,
               size: 48,
-              color: Colors.white,
+              color: SavoraColors.surface,
             ),
           ),
           const SizedBox(height: 16),
@@ -145,7 +147,7 @@ class _DifficultySelectionScreenState extends State<DifficultySelectionScreen>
             style: TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
-              color: Colors.white,
+              color: SavoraColors.surface,
             ),
           ),
           const SizedBox(height: 8),
@@ -153,7 +155,7 @@ class _DifficultySelectionScreenState extends State<DifficultySelectionScreen>
             'Select difficulty level for your financial life simulation',
             style: TextStyle(
               fontSize: 16,
-              color: Colors.white.withOpacity(0.8),
+              color: SavoraColors.surface.withOpacity(0.8),
             ),
             textAlign: TextAlign.center,
           ),
@@ -202,18 +204,18 @@ class _DifficultySelectionScreenState extends State<DifficultySelectionScreen>
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: isSelected 
-              ? difficulty.color.withOpacity(0.2)
-              : Colors.white.withOpacity(0.05),
+              ? SavoraColors.surface.withOpacity(0.15)
+              : SavoraColors.surface.withOpacity(0.05),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: isSelected 
-                ? difficulty.color 
-                : Colors.white.withOpacity(0.1),
+                ? SavoraColors.accent 
+                : SavoraColors.surface.withOpacity(0.2),
             width: 2,
           ),
           boxShadow: isSelected ? [
             BoxShadow(
-              color: difficulty.color.withOpacity(0.3),
+              color: SavoraColors.accent.withOpacity(0.3),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),
@@ -243,7 +245,7 @@ class _DifficultySelectionScreenState extends State<DifficultySelectionScreen>
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: isSelected ? difficulty.color : Colors.white,
+                      color: isSelected ? SavoraColors.accent : SavoraColors.surface,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -251,7 +253,7 @@ class _DifficultySelectionScreenState extends State<DifficultySelectionScreen>
                     difficulty.description,
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.white.withOpacity(0.7),
+                      color: SavoraColors.surface.withOpacity(0.7),
                       height: 1.3,
                     ),
                   ),
