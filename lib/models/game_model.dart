@@ -90,21 +90,9 @@ class GameData {
   static List<Game> getAllGames() {
     return [
       const Game(
-        id: 'debt_tower_defense',
-        title: 'Debt Monster Defense',
-        description: 'Defend your savings from waves of debt monsters! Use income towers to fight off credit cards, loans, and other financial threats.',
-        type: GameType.towerDefense,
-        difficulty: GameDifficulty.medium,
-        xpReward: 300,
-        coinsReward: 500,
-        icon: Icons.castle,
-        color: Colors.red,
-        estimatedTime: Duration(minutes: 20),
-      ),
-      const Game(
-        id: 'life_simulator',
-        title: 'Life Simulator',
-        description: 'Make financial choices throughout your life! Navigate through college, career, housing, and investments to build wealth and happiness.',
+        id: 'life_simulation',
+        title: 'Life Simulation',
+        description: 'Navigate through life\'s financial challenges! Make smart decisions from teenage years through retirement to build wealth and happiness.',
         type: GameType.lifeSimulator,
         difficulty: GameDifficulty.easy,
         xpReward: 250,

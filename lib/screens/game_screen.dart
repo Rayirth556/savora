@@ -2,8 +2,7 @@
 import 'package:flutter/material.dart';
 import '../models/game_model.dart';
 import '../widgets/game_card.dart';
-import 'debt_tower_defense.dart';
-import 'financial_survival_quest_fixed.dart'; // Fixed enhanced version
+import 'financial_survival_quest_fixed.dart'; // Life simulation game
 
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key});
@@ -32,7 +31,7 @@ class _GameScreenState extends State<GameScreen> {
             _buildHeader(),
             const SizedBox(height: 24),
             const Text(
-              'Financial Gaming Arena!',
+              'Financial Life Simulation!',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -120,24 +119,10 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   void _navigateToGame(Game game) {
-    Widget screen;
-    
-    switch (game.type) {
-      case GameType.towerDefense:
-        screen = const DebtTowerDefenseGame();
-        break;
-      case GameType.lifeSimulator:
-        screen = const FinancialSurvivalQuest();
-        break;
-      default:
-        // Fallback - show tower defense for now
-        screen = const DebtTowerDefenseGame();
-        break;
-    }
-
+    // Navigate directly to Life Simulation (Financial Survival Quest)
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => screen),
+      MaterialPageRoute(builder: (context) => const FinancialSurvivalQuest()),
     );
   }
 }
