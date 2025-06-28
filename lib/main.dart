@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '/screens/login_screen.dart';
+import '/theme/savora_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -65,8 +66,8 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: 'SAVORA',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.light(useMaterial3: true),
-      darkTheme: ThemeData.dark(useMaterial3: true),
+      theme: SavoraTheme.lightTheme,
+      darkTheme: SavoraTheme.darkTheme,
       themeMode: _themeMode,
       home: LoginScreen(onThemeChanged: _updateThemeMode),
     );
