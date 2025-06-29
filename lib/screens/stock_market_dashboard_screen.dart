@@ -12,7 +12,8 @@ class StockMarketDashboardScreen extends StatefulWidget {
   const StockMarketDashboardScreen({super.key});
 
   @override
-  State<StockMarketDashboardScreen> createState() => _StockMarketDashboardScreenState();
+  State<StockMarketDashboardScreen> createState() =>
+      _StockMarketDashboardScreenState();
 }
 
 class _StockMarketDashboardScreenState extends State<StockMarketDashboardScreen>
@@ -20,7 +21,7 @@ class _StockMarketDashboardScreenState extends State<StockMarketDashboardScreen>
   final StockMarketService _stockService = StockMarketService();
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
-  
+
   List<Stock> _stocks = [];
   Portfolio? _portfolio;
   bool _isLoading = true;
@@ -35,26 +36,27 @@ class _StockMarketDashboardScreenState extends State<StockMarketDashboardScreen>
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
-    
+
     _initializeStockMarket();
   }
 
   Future<void> _initializeStockMarket() async {
     await _stockService.initialize();
-    
+
     // Create default portfolio if none exists
     if (_stockService.userPortfolio == null) {
-      await _stockService.createPortfolio('My Portfolio', 100000); // ₹1 Lakh virtual money
+      await _stockService.createPortfolio(
+          'My Portfolio', 100000); // ₹1 Lakh virtual money
     }
-    
+
     setState(() {
       _stocks = _stockService.allStocks;
       _portfolio = _stockService.userPortfolio;
       _isLoading = false;
     });
-    
+
     _animationController.forward();
-    
+
     // Listen to stock updates
     _stockService.stockUpdates.listen((updatedStocks) {
       if (mounted) {
@@ -74,8 +76,19 @@ class _StockMarketDashboardScreenState extends State<StockMarketDashboardScreen>
 
   @override
   Widget build(BuildContext context) {
+    final appBar = AppBar(
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back),
+        onPressed: () => Navigator.of(context).pop(),
+      ),
+      title: const Text('Stock Market'),
+      backgroundColor: SavoraColors.background,
+      elevation: 0,
+    );
+
     if (_isLoading) {
       return Scaffold(
+        appBar: appBar,
         backgroundColor: SavoraColors.background,
         body: Center(
           child: Column(
@@ -86,8 +99,8 @@ class _StockMarketDashboardScreenState extends State<StockMarketDashboardScreen>
               Text(
                 'Initializing Stock Market...',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: SavoraColors.textSecondary,
-                ),
+                      color: SavoraColors.textSecondary,
+                    ),
               ),
             ],
           ),
@@ -96,6 +109,7 @@ class _StockMarketDashboardScreenState extends State<StockMarketDashboardScreen>
     }
 
     return Scaffold(
+      appBar: appBar,
       backgroundColor: SavoraColors.background,
       body: SafeArea(
         child: FadeTransition(
@@ -147,9 +161,9 @@ class _StockMarketDashboardScreenState extends State<StockMarketDashboardScreen>
               Text(
                 'Stock Market',
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  color: SavoraColors.textPrimary,
-                  fontWeight: FontWeight.bold,
-                ),
+                      color: SavoraColors.textPrimary,
+                      fontWeight: FontWeight.bold,
+                    ),
               ),
               Row(
                 children: [
@@ -157,16 +171,20 @@ class _StockMarketDashboardScreenState extends State<StockMarketDashboardScreen>
                     width: 8,
                     height: 8,
                     decoration: BoxDecoration(
-                      color: _stockService.isMarketOpen ? SavoraColors.success : SavoraColors.danger,
+                      color: _stockService.isMarketOpen
+                          ? SavoraColors.success
+                          : SavoraColors.danger,
                       shape: BoxShape.circle,
                     ),
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    _stockService.isMarketOpen ? 'Market Open' : 'Market Closed',
+                    _stockService.isMarketOpen
+                        ? 'Market Open'
+                        : 'Market Closed',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: SavoraColors.textSecondary,
-                    ),
+                          color: SavoraColors.textSecondary,
+                        ),
                   ),
                 ],
               ),
@@ -217,8 +235,8 @@ class _StockMarketDashboardScreenState extends State<StockMarketDashboardScreen>
               Text(
                 'Portfolio Value',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: Colors.white.withOpacity(0.9),
-                ),
+                      color: Colors.white.withOpacity(0.9),
+                    ),
               ),
               GestureDetector(
                 onTap: () {
@@ -230,7 +248,8 @@ class _StockMarketDashboardScreenState extends State<StockMarketDashboardScreen>
                   );
                 },
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(12),
@@ -238,9 +257,9 @@ class _StockMarketDashboardScreenState extends State<StockMarketDashboardScreen>
                   child: Text(
                     'View Details',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                    ),
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
                   ),
                 ),
               ),
@@ -250,25 +269,29 @@ class _StockMarketDashboardScreenState extends State<StockMarketDashboardScreen>
           Text(
             '₹${_portfolio!.totalValue.toStringAsFixed(2)}',
             style: Theme.of(context).textTheme.displayMedium?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
           ),
           const SizedBox(height: 8),
           Row(
             children: [
               Icon(
-                _portfolio!.todayChange >= 0 ? Icons.trending_up : Icons.trending_down,
-                color: _portfolio!.todayChange >= 0 ? SavoraColors.success : SavoraColors.danger,
+                _portfolio!.todayChange >= 0
+                    ? Icons.trending_up
+                    : Icons.trending_down,
+                color: _portfolio!.todayChange >= 0
+                    ? SavoraColors.success
+                    : SavoraColors.danger,
                 size: 20,
               ),
               const SizedBox(width: 8),
               Text(
                 '${_portfolio!.todayChange >= 0 ? '+' : ''}₹${_portfolio!.todayChange.toStringAsFixed(2)} (${_portfolio!.todayChangePercent.toStringAsFixed(2)}%)',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                ),
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
               ),
             ],
           ),
@@ -307,16 +330,16 @@ class _StockMarketDashboardScreenState extends State<StockMarketDashboardScreen>
         Text(
           label,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: Colors.white.withOpacity(0.8),
-          ),
+                color: Colors.white.withOpacity(0.8),
+              ),
         ),
         const SizedBox(height: 4),
         Text(
           value,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
         ),
       ],
     );
@@ -390,7 +413,8 @@ class _StockMarketDashboardScreenState extends State<StockMarketDashboardScreen>
                 SavoraColors.warning,
                 () {
                   if (_portfolio != null) {
-                    _showFundsTransfer('portfolio_to_wallet', _portfolio!.availableCash);
+                    _showFundsTransfer(
+                        'portfolio_to_wallet', _portfolio!.availableCash);
                   }
                 },
               ),
@@ -405,7 +429,8 @@ class _StockMarketDashboardScreenState extends State<StockMarketDashboardScreen>
     );
   }
 
-  Widget _buildActionCard(String title, IconData icon, Color color, VoidCallback onTap) {
+  Widget _buildActionCard(
+      String title, IconData icon, Color color, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -436,9 +461,9 @@ class _StockMarketDashboardScreenState extends State<StockMarketDashboardScreen>
             Text(
               title,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: SavoraColors.textPrimary,
-              ),
+                    fontWeight: FontWeight.w600,
+                    color: SavoraColors.textPrimary,
+                  ),
               textAlign: TextAlign.center,
             ),
           ],
@@ -467,21 +492,24 @@ class _StockMarketDashboardScreenState extends State<StockMarketDashboardScreen>
           Text(
             'Market Overview',
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: SavoraColors.textPrimary,
-            ),
+                  fontWeight: FontWeight.bold,
+                  color: SavoraColors.textPrimary,
+                ),
           ),
           const SizedBox(height: 16),
           Row(
             children: [
               Expanded(
-                child: _buildMarketStat('Gainers', _getGainersCount(), SavoraColors.success),
+                child: _buildMarketStat(
+                    'Gainers', _getGainersCount(), SavoraColors.success),
               ),
               Expanded(
-                child: _buildMarketStat('Losers', _getLosersCount(), SavoraColors.danger),
+                child: _buildMarketStat(
+                    'Losers', _getLosersCount(), SavoraColors.danger),
               ),
               Expanded(
-                child: _buildMarketStat('Unchanged', _getUnchangedCount(), SavoraColors.textSecondary),
+                child: _buildMarketStat('Unchanged', _getUnchangedCount(),
+                    SavoraColors.textSecondary),
               ),
             ],
           ),
@@ -496,16 +524,16 @@ class _StockMarketDashboardScreenState extends State<StockMarketDashboardScreen>
         Text(
           count.toString(),
           style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-            color: color,
-            fontWeight: FontWeight.bold,
-          ),
+                color: color,
+                fontWeight: FontWeight.bold,
+              ),
         ),
         const SizedBox(height: 4),
         Text(
           label,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: SavoraColors.textSecondary,
-          ),
+                color: SavoraColors.textSecondary,
+              ),
         ),
       ],
     );
@@ -538,9 +566,9 @@ class _StockMarketDashboardScreenState extends State<StockMarketDashboardScreen>
           Text(
             'Top Movers',
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: SavoraColors.textPrimary,
-            ),
+                  fontWeight: FontWeight.bold,
+                  color: SavoraColors.textPrimary,
+                ),
           ),
           const SizedBox(height: 16),
           Row(
@@ -552,9 +580,9 @@ class _StockMarketDashboardScreenState extends State<StockMarketDashboardScreen>
                     Text(
                       'Top Gainers',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: SavoraColors.success,
-                        fontWeight: FontWeight.w600,
-                      ),
+                            color: SavoraColors.success,
+                            fontWeight: FontWeight.w600,
+                          ),
                     ),
                     const SizedBox(height: 8),
                     ...topGainers.map((stock) => _buildMoverItem(stock, true)),
@@ -569,9 +597,9 @@ class _StockMarketDashboardScreenState extends State<StockMarketDashboardScreen>
                     Text(
                       'Top Losers',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: SavoraColors.danger,
-                        fontWeight: FontWeight.w600,
-                      ),
+                            color: SavoraColors.danger,
+                            fontWeight: FontWeight.w600,
+                          ),
                     ),
                     const SizedBox(height: 8),
                     ...topLosers.map((stock) => _buildMoverItem(stock, false)),
@@ -595,17 +623,17 @@ class _StockMarketDashboardScreenState extends State<StockMarketDashboardScreen>
             child: Text(
               stock.symbol,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: SavoraColors.textPrimary,
-              ),
+                    fontWeight: FontWeight.w600,
+                    color: SavoraColors.textPrimary,
+                  ),
             ),
           ),
           Text(
             '${isGainer ? '+' : ''}${stock.changePercent.toStringAsFixed(1)}%',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: isGainer ? SavoraColors.success : SavoraColors.danger,
-              fontWeight: FontWeight.w600,
-            ),
+                  color: isGainer ? SavoraColors.success : SavoraColors.danger,
+                  fontWeight: FontWeight.w600,
+                ),
           ),
         ],
       ),
@@ -614,7 +642,7 @@ class _StockMarketDashboardScreenState extends State<StockMarketDashboardScreen>
 
   Widget _buildRecentNews() {
     final recentNews = _stockService.marketNews.take(3).toList();
-    
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -637,9 +665,9 @@ class _StockMarketDashboardScreenState extends State<StockMarketDashboardScreen>
               Text(
                 'Market News',
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: SavoraColors.textPrimary,
-                ),
+                      fontWeight: FontWeight.bold,
+                      color: SavoraColors.textPrimary,
+                    ),
               ),
               GestureDetector(
                 onTap: () {
@@ -648,9 +676,9 @@ class _StockMarketDashboardScreenState extends State<StockMarketDashboardScreen>
                 child: Text(
                   'View All',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: SavoraColors.primary,
-                    fontWeight: FontWeight.w600,
-                  ),
+                        color: SavoraColors.primary,
+                        fontWeight: FontWeight.w600,
+                      ),
                 ),
               ),
             ],
@@ -665,7 +693,7 @@ class _StockMarketDashboardScreenState extends State<StockMarketDashboardScreen>
   Widget _buildNewsItem(MarketNews news) {
     Color impactColor;
     IconData impactIcon;
-    
+
     switch (news.impact) {
       case 'POSITIVE':
         impactColor = SavoraColors.success;
@@ -701,9 +729,9 @@ class _StockMarketDashboardScreenState extends State<StockMarketDashboardScreen>
                 Text(
                   news.title,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: SavoraColors.textPrimary,
-                  ),
+                        fontWeight: FontWeight.w600,
+                        color: SavoraColors.textPrimary,
+                      ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -711,8 +739,8 @@ class _StockMarketDashboardScreenState extends State<StockMarketDashboardScreen>
                 Text(
                   news.summary,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: SavoraColors.textSecondary,
-                  ),
+                        color: SavoraColors.textSecondary,
+                      ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -794,9 +822,12 @@ class _StockMarketDashboardScreenState extends State<StockMarketDashboardScreen>
                           ),
                         ),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 6, vertical: 2),
                           decoration: BoxDecoration(
-                            color: stock.changePercent >= 0 ? SavoraColors.success : SavoraColors.error,
+                            color: stock.changePercent >= 0
+                                ? SavoraColors.success
+                                : SavoraColors.error,
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
@@ -814,7 +845,8 @@ class _StockMarketDashboardScreenState extends State<StockMarketDashboardScreen>
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => StockTradingScreen(stock: stock),
+                          builder: (context) =>
+                              StockTradingScreen(stock: stock),
                         ),
                       );
                     },
@@ -857,7 +889,8 @@ class _StockMarketDashboardScreenState extends State<StockMarketDashboardScreen>
               ),
             ),
             const SizedBox(height: 16),
-            _buildMarketInfoItem('Market Status', _stockService.isMarketOpen ? 'Open' : 'Closed'),
+            _buildMarketInfoItem('Market Status',
+                _stockService.isMarketOpen ? 'Open' : 'Closed'),
             _buildMarketInfoItem('Trading Hours', '9:15 AM - 3:30 PM'),
             _buildMarketInfoItem('Brokerage', '0.1% per transaction'),
             _buildMarketInfoItem('Settlement', 'T+2 (Demo Mode)'),
@@ -894,7 +927,8 @@ class _StockMarketDashboardScreenState extends State<StockMarketDashboardScreen>
                           Text(
                             news.summary,
                             style: context.savoraText.bodySmall?.copyWith(
-                              color: context.savoraColors.onSurface.withOpacity(0.7),
+                              color: context.savoraColors.onSurface
+                                  .withOpacity(0.7),
                             ),
                           ),
                         ],

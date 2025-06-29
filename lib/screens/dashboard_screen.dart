@@ -8,6 +8,7 @@ import '../widgets/spending_charts.dart';
 import '../widgets/wallet_card.dart';
 import '../theme/savora_theme.dart';
 import '../widgets/sentiment_dashboard_widget.dart';
+import '../services/stock_market_service.dart';
 
 class DashboardScreen extends StatefulWidget {
   final String userName;
@@ -26,7 +27,7 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  final double virtualWalletBalance = 5000;
+  double _walletBalance = 0.0;
   final int userXP = 120;
   final int streak = 3;
   double userBudget = 2000;
@@ -37,6 +38,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void initState() {
     super.initState();
     _loadTransactions();
+    _loadWalletBalance();
+  }
+
+  Future<void> _loadWalletBalance() async {
+    final balance = await StockMarketService().getWalletBalance();
+    if (mounted) {
+      setState(() {
+        _walletBalance = balance;
+      });
+    }
   }
 
   Future<void> _loadTransactions() async {
@@ -85,7 +96,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               _buildHeader(context, totalSpent),
               const SizedBox(height: 16),
               WalletCard(
-                balance: virtualWalletBalance,
+                balance: _walletBalance,
                 onHistory: () async {
                   await Navigator.push(
                     context,
@@ -102,6 +113,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     _transactions.add(tx);
                   });
                   await _saveTransactions();
+                  // Deduct transaction amount from wallet and update persistent storage
+                  final newBalance = _walletBalance - tx.amount;
+                  await StockMarketService().updateWalletBalance(newBalance);
+                  await _loadWalletBalance();
                 },
               ),
               const SizedBox(height: 16),
@@ -135,7 +150,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     return Card(
                       margin: const EdgeInsets.symmetric(vertical: 6),
                       child: ListTile(
-                        leading: Icon(Icons.attach_money, color: SavoraColors.primary),
+                        leading: Icon(Icons.attach_money,
+                            color: SavoraColors.primary),
                         title: Text(
                           tx.category,
                           style: context.savoraText.titleMedium,
@@ -294,7 +310,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                     ],
                   ),
-                  Icon(Icons.arrow_forward_ios, size: 18, color: SavoraColors.primary),
+                  Icon(Icons.arrow_forward_ios,
+                      size: 18, color: SavoraColors.primary),
                 ],
               ),
             ),
@@ -309,7 +326,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         _infoTile('XP', xp.toString(), Icons.bolt, SavoraColors.xpColor),
-        _infoTile('Streak', '${streak}d', Icons.local_fire_department, SavoraColors.streakColor),
+        _infoTile('Streak', '${streak}d', Icons.local_fire_department,
+            SavoraColors.streakColor),
         _infoTile(
           'Budget Left',
           '₹${(budget - spent).toStringAsFixed(0)}',
@@ -326,14 +344,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
         Icon(icon, color: color, size: 28),
         const SizedBox(height: 4),
         Text(
-          value, 
+          value,
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: color,
           ),
         ),
         Text(
-          label, 
+          label,
           style: TextStyle(
             fontSize: 12,
             color: color.withOpacity(0.8),
