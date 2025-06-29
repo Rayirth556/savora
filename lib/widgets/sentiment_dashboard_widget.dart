@@ -14,8 +14,10 @@ class SentimentDashboardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final summary = TransactionSentimentService.getSpendingSummary(transactions);
-    final insights = TransactionSentimentService.getOverallInsights(transactions, monthlyBudget);
+    final summary =
+        TransactionSentimentService.getSpendingSummary(transactions);
+    final insights = TransactionSentimentService.getOverallInsights(
+        transactions, monthlyBudget);
     final totalSpent = summary.values.fold(0.0, (sum, amount) => sum + amount);
 
     return Card(
@@ -28,44 +30,45 @@ class SentimentDashboardWidget extends StatelessWidget {
             Text(
               'Spending Analysis',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
             const SizedBox(height: 16),
-            
+
             // Spending breakdown by sentiment
             _buildSpendingBreakdown(context, summary, totalSpent),
             const SizedBox(height: 16),
-            
+
             // Insights
             if (insights.isNotEmpty) ...[
               Text(
                 'Insights',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+                      fontWeight: FontWeight.w600,
+                    ),
               ),
               const SizedBox(height: 8),
               ...insights.map((insight) => Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Icon(Icons.lightbulb, size: 16, color: Colors.amber),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        insight,
-                        style: const TextStyle(fontSize: 14),
-                      ),
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Icon(Icons.lightbulb,
+                            size: 16, color: Colors.amber),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            insight,
+                            style: const TextStyle(fontSize: 14),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              )),
+                  )),
             ],
-            
+
             const SizedBox(height: 16),
-            
+
             // Overall sentiment score
             _buildOverallScore(context, summary, totalSpent),
           ],
@@ -74,12 +77,14 @@ class SentimentDashboardWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildSpendingBreakdown(BuildContext context, Map<TransactionSentiment, double> summary, double totalSpent) {
+  Widget _buildSpendingBreakdown(BuildContext context,
+      Map<TransactionSentiment, double> summary, double totalSpent) {
     return Column(
       children: summary.entries.where((entry) => entry.value > 0).map((entry) {
-        final percentage = totalSpent > 0 ? (entry.value / totalSpent * 100) : 0;
+        final percentage =
+            totalSpent > 0 ? (entry.value / totalSpent * 100) : 0;
         final color = TransactionSentimentService.getSentimentColor(entry.key);
-        
+
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 4),
           child: Row(
@@ -100,7 +105,7 @@ class SentimentDashboardWidget extends StatelessWidget {
                 ),
               ),
               Text(
-                '\$${entry.value.toStringAsFixed(2)}',
+                '₹${entry.value.toStringAsFixed(2)}',
                 style: const TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 14,
@@ -121,7 +126,8 @@ class SentimentDashboardWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildOverallScore(BuildContext context, Map<TransactionSentiment, double> summary, double totalSpent) {
+  Widget _buildOverallScore(BuildContext context,
+      Map<TransactionSentiment, double> summary, double totalSpent) {
     // Calculate overall financial health score
     double score = 0;
     final smartSpending = summary[TransactionSentiment.smart] ?? 0;
@@ -132,15 +138,21 @@ class SentimentDashboardWidget extends StatelessWidget {
     final wastefulSpending = summary[TransactionSentiment.wasteful] ?? 0;
 
     if (totalSpent > 0) {
-      score = ((smartSpending + necessarySpending + strategicSpending + plannedSpending * 0.8) / totalSpent) * 100;
-      score = score - ((impulsiveSpending + wastefulSpending) / totalSpent) * 50;
+      score = ((smartSpending +
+                  necessarySpending +
+                  strategicSpending +
+                  plannedSpending * 0.8) /
+              totalSpent) *
+          100;
+      score =
+          score - ((impulsiveSpending + wastefulSpending) / totalSpent) * 50;
       score = score.clamp(0, 100);
     }
 
     Color scoreColor;
     String scoreName;
     IconData scoreIcon;
-    
+
     if (score >= 80) {
       scoreColor = Colors.green;
       scoreName = 'Excellent';

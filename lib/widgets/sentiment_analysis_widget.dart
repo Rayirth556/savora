@@ -14,7 +14,7 @@ class SentimentAnalysisWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Card(
       margin: const EdgeInsets.all(8.0),
       child: Padding(
@@ -31,21 +31,21 @@ class SentimentAnalysisWidget extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 12),
-            
+
             // Transaction details
             _buildTransactionDetails(theme),
             const SizedBox(height: 12),
-            
+
             // Reason
             _buildReason(theme),
             const SizedBox(height: 16),
-            
+
             // Insights
             if (analysis.insights.isNotEmpty) ...[
               _buildInsights(theme),
               const SizedBox(height: 12),
             ],
-            
+
             // Pattern indicator
             _buildPatternIndicator(theme),
           ],
@@ -56,7 +56,7 @@ class SentimentAnalysisWidget extends StatelessWidget {
 
   Widget _buildSentimentChip(ThemeData theme) {
     final sentimentData = _getSentimentData(analysis.sentiment);
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
@@ -89,7 +89,7 @@ class SentimentAnalysisWidget extends StatelessWidget {
   Widget _buildConfidenceIndicator(ThemeData theme) {
     final confidence = (analysis.confidenceScore * 100).round();
     final color = _getConfidenceColor(analysis.confidenceScore);
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
@@ -121,7 +121,7 @@ class SentimentAnalysisWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '\$${transaction.amount.toStringAsFixed(2)}',
+                '₹${transaction.amount.toStringAsFixed(2)}',
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
@@ -192,36 +192,36 @@ class SentimentAnalysisWidget extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         ...analysis.insights.map((insight) => Padding(
-          padding: const EdgeInsets.only(bottom: 4),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                margin: const EdgeInsets.only(top: 6),
-                width: 4,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.amber.shade600,
-                  shape: BoxShape.circle,
-                ),
+              padding: const EdgeInsets.only(bottom: 4),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(top: 6),
+                    width: 4,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.amber.shade600,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      insight,
+                      style: theme.textTheme.bodySmall,
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  insight,
-                  style: theme.textTheme.bodySmall,
-                ),
-              ),
-            ],
-          ),
-        )),
+            )),
       ],
     );
   }
 
   Widget _buildPatternIndicator(ThemeData theme) {
     final patternData = _getPatternData(analysis.pattern);
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
@@ -357,7 +357,7 @@ class SentimentAnalysisWidget extends StatelessWidget {
   String _formatDate(DateTime date) {
     final now = DateTime.now();
     final difference = now.difference(date).inDays;
-    
+
     if (difference == 0) return 'Today';
     if (difference == 1) return 'Yesterday';
     if (difference < 7) return '${difference} days ago';

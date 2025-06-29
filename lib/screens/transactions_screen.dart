@@ -8,7 +8,7 @@ class TransactionsScreen extends StatefulWidget {
   final List<Transaction> transactionHistory;
 
   const TransactionsScreen({
-    super.key, 
+    super.key,
     required this.budget,
     this.transactionHistory = const [],
   });
@@ -32,7 +32,7 @@ class TransactionsScreenState extends State<TransactionsScreen> {
   }
 
   void _updatePrediction() {
-    if (_selectedCategory != null && 
+    if (_selectedCategory != null &&
         _amountController.text.isNotEmpty &&
         double.tryParse(_amountController.text) != null) {
       final amount = double.parse(_amountController.text);
@@ -41,9 +41,11 @@ class TransactionsScreenState extends State<TransactionsScreen> {
         category: _selectedCategory!,
         transactionHistory: widget.transactionHistory,
         budget: widget.budget,
-        description: _descriptionController.text.isEmpty ? null : _descriptionController.text,
+        description: _descriptionController.text.isEmpty
+            ? null
+            : _descriptionController.text,
       );
-      
+
       setState(() {
         _currentAnalysis = analysis;
       });
@@ -55,7 +57,7 @@ class TransactionsScreenState extends State<TransactionsScreen> {
   }
 
   List<String> _getCurrentSuggestions() {
-    if (_selectedCategory != null && 
+    if (_selectedCategory != null &&
         _amountController.text.isNotEmpty &&
         double.tryParse(_amountController.text) != null) {
       final amount = double.parse(_amountController.text);
@@ -64,7 +66,9 @@ class TransactionsScreenState extends State<TransactionsScreen> {
         category: _selectedCategory!,
         transactionHistory: widget.transactionHistory,
         budget: widget.budget,
-        description: _descriptionController.text.isEmpty ? null : _descriptionController.text,
+        description: _descriptionController.text.isEmpty
+            ? null
+            : _descriptionController.text,
       );
     }
     return [];
@@ -111,7 +115,9 @@ class TransactionsScreenState extends State<TransactionsScreen> {
       category: _selectedCategory!,
       amount: double.tryParse(_amountController.text) ?? 0,
       date: DateTime.now(),
-      description: _descriptionController.text.isEmpty ? null : _descriptionController.text,
+      description: _descriptionController.text.isEmpty
+          ? null
+          : _descriptionController.text,
       analysis: _currentAnalysis, // Include the analysis
     );
 
@@ -125,9 +131,9 @@ class TransactionsScreenState extends State<TransactionsScreen> {
 
   bool _shouldShowWarning(TransactionAnalysis analysis) {
     return analysis.sentiment == TransactionSentiment.impulsive ||
-           analysis.sentiment == TransactionSentiment.wasteful ||
-           analysis.sentiment == TransactionSentiment.regrettable ||
-           analysis.confidenceScore > 0.8;
+        analysis.sentiment == TransactionSentiment.wasteful ||
+        analysis.sentiment == TransactionSentiment.regrettable ||
+        analysis.confidenceScore > 0.8;
   }
 
   void _showTransactionWarning(Transaction transaction) {
@@ -214,7 +220,7 @@ class TransactionsScreenState extends State<TransactionsScreen> {
               controller: _amountController,
               decoration: const InputDecoration(
                 labelText: 'Amount',
-                prefixText: '\$',
+                prefixText: '₹',
               ),
               keyboardType: TextInputType.number,
             ),
@@ -225,14 +231,17 @@ class TransactionsScreenState extends State<TransactionsScreen> {
                 labelText: 'Description (optional)',
                 hintText: 'What is this expense for?',
               ),
-              onChanged: (_) => _updatePrediction(), // Update prediction when description changes
+              onChanged: (_) =>
+                  _updatePrediction(), // Update prediction when description changes
             ),
             const SizedBox(height: 24),
-            
+
             // Real-time sentiment analysis prediction
             if (_currentAnalysis != null) ...[
               Card(
-                color: TransactionSentimentService.getSentimentColor(_currentAnalysis!.sentiment).withOpacity(0.1),
+                color: TransactionSentimentService.getSentimentColor(
+                        _currentAnalysis!.sentiment)
+                    .withOpacity(0.1),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
@@ -242,14 +251,18 @@ class TransactionsScreenState extends State<TransactionsScreen> {
                         children: [
                           Icon(
                             _getSentimentIcon(_currentAnalysis!.sentiment),
-                            color: TransactionSentimentService.getSentimentColor(_currentAnalysis!.sentiment),
+                            color:
+                                TransactionSentimentService.getSentimentColor(
+                                    _currentAnalysis!.sentiment),
                           ),
                           const SizedBox(width: 8),
                           Text(
                             'Prediction: ${_currentAnalysis!.sentiment.name.toUpperCase()}',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              color: TransactionSentimentService.getSentimentColor(_currentAnalysis!.sentiment),
+                              color:
+                                  TransactionSentimentService.getSentimentColor(
+                                      _currentAnalysis!.sentiment),
                             ),
                           ),
                         ],
@@ -274,7 +287,7 @@ class TransactionsScreenState extends State<TransactionsScreen> {
                 ),
               ),
               const SizedBox(height: 12),
-              
+
               // Real-time suggestions
               if (_getCurrentSuggestions().isNotEmpty) ...[
                 Card(
@@ -294,15 +307,16 @@ class TransactionsScreenState extends State<TransactionsScreen> {
                           ],
                         ),
                         const SizedBox(height: 8),
-                        ..._getCurrentSuggestions().take(3).map((suggestion) => 
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 2),
-                            child: Text(
-                              suggestion,
-                              style: const TextStyle(fontSize: 12),
+                        ..._getCurrentSuggestions().take(3).map(
+                              (suggestion) => Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 2),
+                                child: Text(
+                                  suggestion,
+                                  style: const TextStyle(fontSize: 12),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
                       ],
                     ),
                   ),
@@ -310,24 +324,26 @@ class TransactionsScreenState extends State<TransactionsScreen> {
               ],
               const SizedBox(height: 16),
             ],
-            
+
             ElevatedButton(
               onPressed: _submitTransaction,
               style: ElevatedButton.styleFrom(
-                backgroundColor: _currentAnalysis != null && _shouldShowWarning(_currentAnalysis!)
+                backgroundColor: _currentAnalysis != null &&
+                        _shouldShowWarning(_currentAnalysis!)
                     ? Colors.orange
                     : Colors.green,
                 foregroundColor: Colors.white,
               ),
               child: Text(
-                _currentAnalysis != null && _shouldShowWarning(_currentAnalysis!)
+                _currentAnalysis != null &&
+                        _shouldShowWarning(_currentAnalysis!)
                     ? 'Add Expense (Warning!)'
                     : 'Add Expense',
               ),
             ),
             const SizedBox(height: 32),
             Text(
-              'Monthly Budget: \$${widget.budget.toStringAsFixed(0)}',
+              'Monthly Budget: ₹${widget.budget.toStringAsFixed(0)}',
               style: theme.textTheme.bodyLarge,
             ),
           ],
