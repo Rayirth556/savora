@@ -1,76 +1,58 @@
-# 💸 Savora — Gamified Financial Literacy for Young Indians
+# Savora — A Gamified Financial Literacy Platform for Young Indians
 
-**Savora** is an educational app designed to make **financial literacy practical, engaging, and rewarding** for young Indians (teens to early 20s).  
-Through realistic simulations, interactive games, and a safe, controlled virtual wallet, Savora helps users build money habits that stick — **before they handle real money.**
-
----
-
-## 📌 What is Savora?
-
-Savora combines two main parts:
-
-### 🕹️ 1. Gamified Financial Education
-
-Savora turns key personal finance lessons into **interactive mini-games and scenario-based challenges**:
-- Learn **budgeting, investing, saving discipline, risk management**, and more.
-- Play with a **virtual stock market simulator** to understand how real investments behave.
-- Navigate a **Life Finance Simulator** where choices mimic real adult money decisions — like loans vs. savings, emergencies, insurance, and big purchases.
-- Make smart choices to earn XP, level up, and unlock more advanced content.
+Savora is an experimental mobile application designed to help India’s youth (teenagers to young adults) understand and practice real-world personal finance through gamification, realistic simulations, and behavior-based progression.
 
 ---
 
-### 💼 2. Simulated Wallet & Spending Practice
+## Why Savora?
 
-Savora includes a **mock digital wallet**, similar to real UPI apps:
-- Users get virtual currency to practice transactions in a **safe sandbox**.
-- Perform mock UPI-style payments.
-- Track spending with categories like **Needs, Wants, and Regrets**.
-- Every spending decision affects XP: good habits get rewarded, poor choices cost points.
-- Higher levels unlock features like simulated **interest bonuses, advanced budgeting, and saving tools**.
+India faces a major financial literacy gap among students and early working professionals. Concepts like budgeting, investing, risk management, credit discipline, and long-term planning are rarely taught in school. Savora addresses this gap by transforming financial education into an interactive experience, encouraging users to build good money habits that carry over into real life.
 
 ---
 
-## 🌟 Why Savora?
+## Core Features
 
-- **No-Risk Learning:** Practice real financial behavior with zero real-world loss.
-- **Behavioral Feedback:** Understand the impact of everyday spending.
-- **Progressive Unlocks:** Build habits step-by-step — good money management unlocks new tools.
-- **Future-Ready:** Savora lays the groundwork for real financial tools, with plans to connect to actual UPI APIs and partner with trusted NBFCs for real-world financial empowerment.
+### 1. Gamified Financial Education
 
----
-
-## ⚙️ Tech Stack
-
-- **Frontend:** Flutter
-- **Backend:** Mock integrations for fast prototyping (offline-first)
-- **Future:** Expand to secure, real UPI APIs and robust backend with bank/NBFC partnerships.
+- **Mini-Games and Interactive Scenarios:** Users learn core financial principles such as budgeting, savings discipline, investing basics, loans, and insurance through short, interactive scenarios that simulate real decision-making.
+- **Life Finance Simulator:** The app includes a decision-based life simulation where users navigate scenarios like handling unexpected expenses, choosing between EMIs and saving up, or picking insurance plans, all while tracking their outcomes.
+- **Stock Market Simulator:** Savora offers a stock market sandbox powered by real historical data (up to 2024) to comply with regulatory boundaries while providing a practical environment for users to understand market behavior, volatility, diversification, and portfolio strategies.
+- **Progression and Rewards:** As users make sound financial decisions, they earn experience points (XP), maintain streaks, and level up. Higher levels unlock advanced modules, tools, and simulations, creating an incentive structure for continuous learning.
 
 ---
 
-## 👥 Who’s Behind Savora?
+### 2. Simulated Wallet and Spending Behavior
 
-Savora is built by a small, passionate team focused on **financial empowerment through accessible, gamified technology**.
-
----
-
-## 📲 Try Savora
-
-> **Note:** The current version is a **demo prototype** for educational purposes only.  
-It does not handle real money — all transactions are simulated.
+- **Mock Wallet:** Users receive a simulated digital wallet with a balance of virtual money. They can practice mock UPI-style payments, categorize spending into needs, wants, and regrets, and analyze patterns.
+- **Behavior-Linked Rewards:** Each transaction impacts the user’s XP, encouraging healthy spending and saving behaviors. Responsible choices are rewarded with simulated interest bonuses and access to advanced financial tools within the app.
+- **Future Integration:** While the MVP is fully offline-first with no real money transactions, the roadmap includes integration with regulated UPI providers (e.g., Razorpay, Setu) and potential partnerships with NBFCs to transition Savora into a real fintech tool that blends financial learning with genuine financial empowerment.
 
 ---
 
-## 📢 Contributing & Feedback
+## Long-Term Vision
 
-We welcome ideas and feedback!  
-If you’d like to help test, contribute, or partner with us, open an issue or start a discussion here.
-
----
-
-## 📄 License
-
-This project is licensed under [MIT](LICENSE).
+Savora is not just another finance app. The goal is to become an **officially certified financial literacy platform**. We plan to collaborate with established financial institutions like Bajaj Finance and other regulated bodies to ensure the content meets educational standards and delivers practical, responsible guidance to users.
 
 ---
 
-**Savora — Learn. Play. Master your money.**
+## Current Status
+
+- **Tech Stack:** Flutter (cross-platform), mock integrations, offline-first architecture for hackathon MVP.
+- **Team:** 4 members focused on product design, frontend development, game mechanics, and future backend integrations.
+- **Development Stage:** Core features are built for demo and pilot testing. Roadmap includes production-grade wallet simulations, real-world data integrations, regulatory compliance, and official partnerships.
+
+---
+
+## Contributing
+
+This repository will evolve to include modules for simulations, finance education content, data visualization, and secure integrations. We welcome contributions and collaboration from educators, financial advisors, and developers interested in shaping the future of financial literacy in India.
+
+---
+
+## License
+
+This project is currently developed for educational and demonstration purposes only. Licensing details will be updated as Savora matures toward public release.
+
+---
+
+**Contact:** For collaboration or queries, reach out via this repository’s issues or open a pull request.
