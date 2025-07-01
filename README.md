@@ -43,15 +43,7 @@ Savora is not just another finance app. The goal is to become an **officially ce
 
 ---
 
-## Contributing
 
-This repository will evolve to include modules for simulations, finance education content, data visualization, and secure integrations. We welcome contributions and collaboration from educators, financial advisors, and developers interested in shaping the future of financial literacy in India.
-
----
-
-## License
-
-This project is currently developed for educational and demonstration purposes only. Licensing details will be updated as Savora matures toward public release.
 
 ---
 
